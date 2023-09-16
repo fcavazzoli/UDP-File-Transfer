@@ -1,6 +1,6 @@
 import socket
 
-from .ConnectionsManagement import ConnectionsManagement
+from .connections_manager import ConnectionsManager
 
 
 class Server:
@@ -9,7 +9,7 @@ class Server:
                                     socket.SOCK_DGRAM)
         self.socket.bind((udp_ip, port))
         self.logger = logger
-        self.connections_management = ConnectionsManagement(self.socket)
+        self.connections_management = ConnectionsManager(self.socket)
 
 
     def serve(self):
