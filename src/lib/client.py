@@ -9,7 +9,6 @@ class Client:
         self.logger = logger
 
     def send(self, message):
-        print("UDP target IP: %s" % self.remote_ip)
-        print("UDP target port: %s" % self.remote_port)
-        print("message: %s" % message)
+        self.logger.info(f"UDP target IP: {self.remote_ip}, UDP target port: {self.remote_port}")
+        self.logger.info(f"message:{message}")
         self.socket.sendto(message, (self.remote_ip, self.remote_port))

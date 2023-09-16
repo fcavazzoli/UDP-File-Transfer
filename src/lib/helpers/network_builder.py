@@ -1,11 +1,7 @@
-from modules.constants import DEFAULT_PORT
-from modules.network_builder.errors import NetworkBuilderError
-
+from lib.constants import DEFAULT_PORT
 
 class NetworkBuilder:
     def __init__(self, type):
-        if type not in ['SERVER', 'CLIENT']:
-            raise NetworkBuilderError('NetworkBuilder debe ser \'SERVER\' o \'CLIENT\'')
         self.type = type
         self.logger = None
         self.port = DEFAULT_PORT

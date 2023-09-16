@@ -1,5 +1,6 @@
 import logging
-from modules.constants import DEFAULT_LOG_FILE_NAME
+from typing import Any
+from lib.constants import DEFAULT_LOG_FILE_NAME
 """
 Es la configuración del Logger, para obtener una instancia de logger se debe llamar a logger_setup() y
 pasarle como argumento los argumentos parseados por argparse
