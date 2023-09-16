@@ -14,10 +14,9 @@ class Connection:
         handshake = bytes(handshake_data).decode('utf-8').split(' ')
         if(handshake[0] != 'handshake'):
             raise Exception('Invalid handshake')
-        port = int(handshake[1])
 
 
-        self.thread = ConnectionThread('Thread ' + str(connectionNumber), self.queue, address, port)
+        self.thread = ConnectionThread('Thread ' + str(connectionNumber), self.queue, address)
         self.thread.start()
 
     def received(self, message):
