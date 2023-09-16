@@ -26,8 +26,14 @@ if __name__ == "__main__":
             .set_port(parsed_args.port)\
             .build()
     
-    msg = bytes('Hola server', 'utf-8')
-    client.send(msg)
+
+    client = Client(UDP_IP, UDP_PORT, None)
+    client.connect()
+    for x in range(0, 10):
+        client.send(bytes('Hello World %s' % x, "utf-8"))
+        time.sleep(5)
+    client.send(b'exit')
+
 
     #TODO: seleccionar protocolo
     #TODO: descargar (?
