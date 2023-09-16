@@ -1,13 +1,19 @@
 import socket
 
-UDP_IP = "127.0.0.1"
-UDP_PORT = 5005
+from ConnectionsManagement import ConnectionsManagement
 
-sock = socket.socket(socket.AF_INET, # Internet
-                     socket.SOCK_DGRAM) # UDP
-sock.bind((UDP_IP, UDP_PORT))
 
-while True:
-    data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
-    print("received message: %s" % data)
-    print("from %s", addr)
+class Server:
+    def __init__(self, udp_ip, port, logger):
+        self.socket = socket.socket(socket.AF_INET, # Internet
+                                    socket.SOCK_DGRAM)
+        self.socket.bind((udp_ip, port))
+        self.logger = logger
+        self.connections_management = ConnectionsManagement(self.socket)
+
+
+    def serve(self):
+        while True:
+            data, addr = self.socket.recvfrom(1024)
+            print("received message: %s" % data)
+            self.connections_management.new_message(addr[0], addr[1], data)
