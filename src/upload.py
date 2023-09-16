@@ -1,3 +1,4 @@
+from modules.network_builder.network_builder import NetworkBuilder
 from modules.parser import parse_upload_args
 from modules.logger_setup import logger_setup
 
@@ -17,6 +18,14 @@ if __name__ == "__main__":
     logger.info("Te voy contando")
     logger.debug("Te cuento con mucho detalle")
     
+    client = NetworkBuilder('CLIENT')\
+            .set_logger(logger)\
+            .set_host(parsed_args.host)\
+            .set_port(parsed_args.port)\
+            .build()
     
+    msg = bytes('Hola server', 'utf-8')
+    client.send(msg)
+
     #TODO: seleccionar protocolo
     #TODO: subir (?
