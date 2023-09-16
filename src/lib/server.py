@@ -10,5 +10,5 @@ class Server:
     def serve(self):
         while True:
             data, addr = self.socket.recvfrom(1024)
-            print("received message: %s" % data)
-            print("from %s", addr)
+            self.logger.info(f"New message from: {addr}")
+            self.logger.info(f"Message:{data}")
