@@ -1,6 +1,6 @@
-from modules.network_builder import NetworkBuilder
-from modules.parser import parse_server_args
-from modules.logger_setup import logger_setup
+from lib.helpers.network_builder import NetworkBuilder
+from lib.common.parser import parse_server_args
+from lib.common.logger_setup import logger_setup
 
 def run_server(parsed_args):
     logger = logger_setup(parsed_args)

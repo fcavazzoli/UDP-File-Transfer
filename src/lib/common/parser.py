@@ -1,5 +1,5 @@
 import argparse
-from modules.constants import DEFAULT_PORT, DEFAULT_IP, DEFAULT_RELIABLE_PROTOCOL
+from lib.constants import DEFAULT_PORT, DEFAULT_IP, DEFAULT_RELIABLE_PROTOCOL
 
 def build_base_parser(command_desc):
     """Contruye el parser con los argumentos comunes a todos los comandos: download, upload y start-server

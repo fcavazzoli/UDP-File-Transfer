@@ -1,4 +1,4 @@
-from modules.constants import DEFAULT_PORT
+from lib.constants import DEFAULT_PORT
 
 class NetworkBuilder:
     def __init__(self, type):
