@@ -11,9 +11,9 @@ class ConnectionsManagement:
         self.socket = socket
 
     
-    def new_message(self, address, port, message):
-        if(not (address, port) in self.connections):
-            self.connections[(address, port)] = Connection(str(len(self.connections)), address, message)
+    def new_message(self, clientAddress, message):
+        if(not clientAddress in self.connections):
+            self.connections[clientAddress] = Connection(str(len(self.connections)), clientAddress, message)
         else: 
-            self.connections[(address, port)].received(message)
+            self.connections[clientAddress].received(message)
 

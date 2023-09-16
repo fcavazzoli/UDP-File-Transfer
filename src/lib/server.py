@@ -16,4 +16,4 @@ class Server:
         while True:
             data, addr = self.socket.recvfrom(1024)
             print("received message: %s" % data)
-            self.connections_management.new_message(addr[0], addr[1], data)
+            self.connections_management.new_message(addr, data)
