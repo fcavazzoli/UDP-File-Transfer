@@ -1,9 +1,6 @@
-from queue import Queue
+from .connection import Connection
 
-
-from ..Connection import Connection
-
-class ConnectionsManagement:
+class ConnectionsManager:
     socket = None
     connections = {}
     
