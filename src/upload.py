@@ -2,18 +2,19 @@ from lib.helpers.network_builder import NetworkBuilder
 from lib.common.parser import parse_upload_args
 from lib.common.logger_setup import logger_setup
 
+
 def upload(parsed_args):
     logger = logger_setup(parsed_args)
-    
+
     client = NetworkBuilder('CLIENT')\
-            .set_logger(logger)\
-            .set_host(parsed_args.host)\
-            .set_port(parsed_args.port)\
-            .build()
-    
+        .set_logger(logger)\
+        .set_host(parsed_args.host)\
+        .set_port(parsed_args.port)\
+        .build()
+
     msg = bytes('Hola server', 'utf-8')
-    #TODO: seleccionar protocolo
-    #TODO: subir (?
+    # TODO: seleccionar protocolo
+    # TODO: subir (?
 
     try:
         client.send(msg)
