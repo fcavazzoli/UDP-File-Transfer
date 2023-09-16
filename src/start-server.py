@@ -20,3 +20,4 @@ def run_server(parsed_args):
 if __name__ == "__main__":
     parsed_args = parse_server_args()
     run_server(parsed_args)
+

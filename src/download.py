@@ -1,3 +1,5 @@
+import time
+
 from lib.helpers.network_builder import NetworkBuilder
 from lib.common.parser import parse_download_args
 from lib.common.logger_setup import logger_setup
@@ -14,7 +16,11 @@ def download(parsed_args):
     msg = bytes('Hola server', 'utf-8')
 
     try:
-        client.send(msg)
+      client.connect()
+      for x in range(0, 10):
+          client.send(bytes('Hello World %s' % x, "utf-8"))
+          time.sleep(5)
+      client.send(b'exit')
     except KeyboardInterrupt:
         logger.info("Server stopped by user")
     except Exception as e:

@@ -12,6 +12,8 @@ def upload(parsed_args):
             .build()
     
     msg = bytes('Hola server', 'utf-8')
+    #TODO: seleccionar protocolo
+    #TODO: subir (?
 
     try:
         client.send(msg)
