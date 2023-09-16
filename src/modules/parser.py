@@ -7,16 +7,21 @@ def build_base_parser(command_desc):
 
     #TODO: Poner un valor default de ip, de puerto y protocolo, para no tener que ir escribiendo siempre
 
-    # store_true = guardar True si se encuentra el argumento, False si no
-    # store = guarda el valor del argumento, si no esta la flag guarda None
-    # metavar = nombre del argumento que se muestra en el help
-    parser.add_argument( "-v", "--verbose", action="store_true", help="increase output verbosity")
-    parser.add_argument( "-q", "--quiet", action="store_true", help="decrease output verbosity")
+    # resumen argparse: https://realpython.com/command-line-interfaces-python-argparse
+    #   store_true = guardar True si se encuentra el argumento, False de lo contrario
+    #   store = guarda el valor del argumento, si la flag no esta, guarda None
+    #   metavar = nombre del argumento que se muestra en el help
+
+    # solo permite o verbose o quiet, no ambas
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument( "-v", "--verbose", action="store_true", help="increase output verbosity")
+    group.add_argument( "-q", "--quiet", action="store_true", help="decrease output verbosity")
+
     parser.add_argument("-H", "--host", action="store", metavar="addr", help="server IP address")
     parser.add_argument("-p", "--port", action="store", metavar="port", help="server port")
 
-    # NOTE: Es un nuevo argumento, no está explicitamente en el enunciado
-    #Tipo de protocolo: Stop and Wait o Selective Repeat
+    # Tipo de protocolo: Stop and Wait o Selective Repeat
+    # Es un nuevo argumento, no está explicitamente en el enunciado
     parser.add_argument("-P", "--protocol", metavar="protocol", help="server/client protocol")
 
     return parser
@@ -43,7 +48,7 @@ def parse_upload_args():
 
 def parse_server_args():
     """Parsea los argumentos para el comando start-server y devuelve un objeto con los argumentos parseados"""
-    parser = build_base_parser("Starts a server")
+    parser = build_base_parser("Starts a server that accepts file uploads and downloads")
     parser.add_argument("-s", "--storage", action="store", metavar="dirpath", help="storage dir path")
 
     parsed_args = parser.parse_args()
