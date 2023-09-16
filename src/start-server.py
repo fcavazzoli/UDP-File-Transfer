@@ -1,4 +1,4 @@
-from modules.network_builder.network_builder import NetworkBuilder
+from modules.network_builder import NetworkBuilder
 from modules.parser import parse_server_args
 from modules.logger_setup import logger_setup
 
