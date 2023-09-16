@@ -14,8 +14,6 @@ def download(parsed_args):
         .set_port(parsed_args.port)\
         .build()
 
-    msg = bytes('Hola server', 'utf-8')
-
     try:
         client.connect()
         for x in range(0, 10):
