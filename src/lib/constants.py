@@ -12,4 +12,3 @@ DEFAULT_FILE_NAME = "file.txt"
 
 # log file name
 DEFAULT_LOG_FILE_NAME = "app.log"
-

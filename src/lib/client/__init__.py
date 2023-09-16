@@ -6,7 +6,7 @@ UDP_PORT = 5005
 
 class Client:
     def __init__(self, remote_ip, remote_port, logger):
-        self.socket = socket.socket(socket.AF_INET, # Internet
+        self.socket = socket.socket(socket.AF_INET,  # Internet
                                     socket.SOCK_DGRAM)
         self.remote_ip = remote_ip
         self.remote_port = remote_port
@@ -27,4 +27,3 @@ class Client:
         self._send(message)
         data, addr = self._receive()
         print("response: %s" % data)
-

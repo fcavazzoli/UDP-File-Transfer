@@ -16,6 +16,7 @@ Resumen de niveles, de más bajo a más alto:
     DEBUG          |   <- verbose
 """
 
+
 def logger_setup(parsed_args):
     log_file_name = DEFAULT_LOG_FILE_NAME
     logger = logging.getLogger()
@@ -49,31 +50,32 @@ def logger_setup(parsed_args):
 
     return logger
 
+
 class DummyLogger:
     def __init__(self):
         self.warning_printed = False
 
     def debug(self, msg, *args: Any, **kwargs: Any):
-        if self.warning_printed == False:
+        if not self.warning_printed:
             print('WARNING: EL LOGGER NO ESTA CONFIGURADO')
             self.warning_printed = True
 
     def info(self, msg, *args: Any, **kwargs: Any):
-        if self.warning_printed == False:
+        if not self.warning_printed:
             print('WARNING: EL LOGGER NO ESTA CONFIGURADO')
             self.warning_printed = True
 
     def warning(self, msg, *args: Any, **kwargs: Any):
-        if self.warning_printed == False:
+        if not self.warning_printed:
             print('WARNING: EL LOGGER NO ESTA CONFIGURADO')
             self.warning_printed = True
 
     def error(self, msg, *args: Any, **kwargs: Any):
-        if self.warning_printed == False:
+        if not self.warning_printed:
             print('WARNING: EL LOGGER NO ESTA CONFIGURADO')
             self.warning_printed = True
 
     def critical(self, msg, *args: Any, **kwargs: Any):
-        if self.warning_printed == False:
+        if not self.warning_printed:
             print('WARNING: EL LOGGER NO ESTA CONFIGURADO')
             self.warning_printed = True
