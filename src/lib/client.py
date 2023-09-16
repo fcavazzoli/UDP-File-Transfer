@@ -1,13 +1,15 @@
 import socket
 
-UDP_IP = "127.0.0.1"
-UDP_PORT = 5005
-MESSAGE = b"Hello, World!"
+class Client:
+    def __init__(self, remote_ip, remote_port, logger):
+        self.socket = socket.socket(socket.AF_INET, # Internet
+                                    socket.SOCK_DGRAM)
+        self.remote_ip = remote_ip
+        self.remote_port = remote_port
+        self.logger = logger
 
-print("UDP target IP: %s" % UDP_IP)
-print("UDP target port: %s" % UDP_PORT)
-print("message: %s" % MESSAGE)
-
-sock = socket.socket(socket.AF_INET, # Internet
-                     socket.SOCK_DGRAM) # UDP
-sock.sendto(MESSAGE, (UDP_IP, UDP_PORT))
+    def send(self, message):
+        print("UDP target IP: %s" % self.remote_ip)
+        print("UDP target port: %s" % self.remote_port)
+        print("message: %s" % message)
+        self.socket.sendto(message, (self.remote_ip, self.remote_port))
