@@ -1,13 +1,14 @@
 import socket
 
-UDP_IP = "127.0.0.1"
-UDP_PORT = 5005
+class Server:
+    def __init__(self, udp_ip, port, logger):
+        self.socket = socket.socket(socket.AF_INET, # Internet
+                                    socket.SOCK_DGRAM)
+        self.socket.bind((udp_ip, port))
+        self.logger = logger
 
-sock = socket.socket(socket.AF_INET, # Internet
-                     socket.SOCK_DGRAM) # UDP
-sock.bind((UDP_IP, UDP_PORT))
-
-while True:
-    data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
-    print("received message: %s" % data)
-    print("from %s", addr)
+    def serve(self):
+        while True:
+            data, addr = self.socket.recvfrom(1024)
+            print("received message: %s" % data)
+            print("from %s", addr)
