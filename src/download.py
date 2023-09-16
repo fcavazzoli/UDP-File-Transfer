@@ -2,9 +2,11 @@ from modules.parser import parse_download_args
 from modules.logger_setup import logger_setup
 
 
+
 if __name__ == "__main__":
     parsed_args = parse_download_args()
     # acceder a los argumentos parseados
+
     print(parsed_args)
     print(parsed_args.host)
     print(parsed_args.verbose)

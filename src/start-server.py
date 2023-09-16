@@ -15,7 +15,6 @@ if __name__ == "__main__":
     logger.warning("Warning")
     logger.info("Te voy contando")
     logger.debug("Te cuento con mucho detalle")
-    
-    #TODO: logger
+
     #TODO: seleccionar protocolo
     #TODO: server stuff (?

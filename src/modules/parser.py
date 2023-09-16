@@ -8,6 +8,8 @@ def build_base_parser(command_desc):
 
     parser = argparse.ArgumentParser(description=command_desc)
 
+    #TODO: Poner un valor default de ip, de puerto y protocolo, para no tener que ir escribiendo siempre
+
     # resumen argparse: https://realpython.com/command-line-interfaces-python-argparse
     #   store_true = guardar True si se encuentra el argumento, False de lo contrario
     #   store = guarda el valor del argumento, si la flag no esta, guarda None
