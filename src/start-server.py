@@ -1,23 +1,9 @@
-from modules.network_builder.errors import NetworkBuilderError
-from modules.network_builder.network_builder import NetworkBuilder
-from modules.parser import parse_server_args
-from modules.logger_setup import logger_setup
+from lib.helpers.network_builder import NetworkBuilder
+from lib.common.parser import parse_server_args
+from lib.common.logger_setup import logger_setup
 
-if __name__ == "__main__":
-    parsed_args = parse_server_args()
-    # acceder a los argumentos parseados
-    print(parsed_args)
-    print(parsed_args.host)
-    print(parsed_args.verbose)
-    
+def run_server(parsed_args):
     logger = logger_setup(parsed_args)
-    # probar con -v y -q para ver los distintos niveles de log
-    logger.critical("Esto es critico")
-    logger.error("Es solo un error")
-    logger.warning("Warning")
-    logger.info("Te voy contando")
-    logger.debug("Te cuento con mucho detalle")
-
 
     server = NetworkBuilder('SERVER')\
             .set_logger(logger)\
@@ -28,3 +14,10 @@ if __name__ == "__main__":
         server.serve()
     except KeyboardInterrupt:
         logger.info("Server stopped by user")
+    except Exception as e:
+        logger.error(e)
+
+if __name__ == "__main__":
+    parsed_args = parse_server_args()
+    run_server(parsed_args)
+

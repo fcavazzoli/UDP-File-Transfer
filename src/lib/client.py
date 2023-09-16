@@ -4,6 +4,7 @@ import time
 UDP_IP = "127.0.0.1"
 UDP_PORT = 5005
 
+
 class Client:
     def __init__(self, remote_ip, remote_port, logger):
         self.socket = socket.socket(socket.AF_INET, # Internet
