@@ -1,6 +1,6 @@
 import socket
 
-from ConnectionsManagement import ConnectionsManagement
+from .ConnectionsManagement import ConnectionsManagement
 
 
 class Server:

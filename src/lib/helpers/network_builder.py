@@ -12,7 +12,7 @@ class NetworkBuilder:
         return self
     
     def set_port(self, port):
-        self.port = port
+        self.port = int(port)
         return self
     
     def set_host(self, host):

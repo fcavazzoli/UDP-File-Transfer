@@ -1,3 +1,5 @@
+import time
+
 from lib.helpers.network_builder import NetworkBuilder
 from lib.common.parser import parse_download_args
 from lib.common.logger_setup import logger_setup

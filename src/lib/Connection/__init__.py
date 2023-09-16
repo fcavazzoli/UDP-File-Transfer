@@ -1,6 +1,6 @@
 from queue import Queue
 
-from ConnectionThread import ConnectionThread
+from ..ConnectionThread import ConnectionThread
 
 class Connection:
     queue= None

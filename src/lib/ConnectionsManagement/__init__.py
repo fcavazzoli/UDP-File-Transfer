@@ -1,7 +1,7 @@
 from queue import Queue
 
 
-from Connection import Connection
+from ..Connection import Connection
 
 class ConnectionsManagement:
     socket = None
