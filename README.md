@@ -1,4 +1,9 @@
+## Observaciones
+Por ahora se ejecuta desde directorio raiz como:
+```python src/upload.py -v -H host -p puerto```
+TODO: Cambiarlo a como lo pide el enunciado, ```python upload ...```, es cambiando la ubicacion de los archivos? poner un init.py?
 
+---
 
 ## Interfaz del cliente
 La funcionalidad del cliente se divide en dos aplicaciónes de línea de comandos: upload y download
