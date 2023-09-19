@@ -12,6 +12,7 @@ def run_server(parsed_args):
         .set_port(parsed_args.port)\
         .build()
     try:
+        logger.info("Server started")
         server.serve()
     except KeyboardInterrupt:
         logger.info("Server stopped by user")
