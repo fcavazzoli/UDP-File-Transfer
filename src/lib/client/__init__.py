@@ -22,6 +22,8 @@ class Client:
         self._send(bytes('handshake', "utf-8"))
         data, addr = self._receive()
         print("handshake response: %s" % data)
+        self.remote_address = addr[0]
+        self.remote_port = addr[1]
 
     def send(self, message):
         self._send(message)
