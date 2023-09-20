@@ -1,6 +1,6 @@
 import socket
 
-from .connections_manager import ConnectionsManager
+from .threads_manager import ThreadsManger
 
 
 class Server:
@@ -9,10 +9,13 @@ class Server:
                                     socket.SOCK_DGRAM)
         self.socket.bind((udp_ip, port))
         self.logger = logger
-        self.connections_management = ConnectionsManager(self.socket)
+        self.threads_manager = ThreadsManager()
 
     def serve(self):
         while True:
             data, addr = self.socket.recvfrom(1024)
-            print("received message: %s" % data)
-            self.connections_management.new_message(addr, data)
+            print("received new connection: %s" % data)
+            handshake = bytes(data).decode('utf-8').split(' ')
+            if (handshake[0] != 'handshake'):
+                raise Exception('Invalid handshake')
+            self.threads_manager.new_connection(addr)
