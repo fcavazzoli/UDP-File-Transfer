@@ -9,8 +9,8 @@ class ConnectionThread(Thread):
     queue = None
 
     def __init__(self, name, address):
-        super(Thread, self).__init__()
-        self.queue = Queue
+        super().__init__()      # super calls the parent class constructor
+        self.queue = Queue()
         self.name = name
         self.connection = Connection(address)
 

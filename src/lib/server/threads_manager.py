@@ -9,5 +9,6 @@ class ThreadsManager:
 
     def new_connection(self, clientAddress):
         if (clientAddress not in self.connections):
+            # el nombre del thread es el numero de conexion
             self.connections[clientAddress] = ConnectionThread(str(len(self.connections)), clientAddress)
             self.connections[clientAddress].start()

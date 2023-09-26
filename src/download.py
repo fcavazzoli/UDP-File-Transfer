@@ -14,16 +14,15 @@ def download(parsed_args):
         .set_port(parsed_args.port)\
         .build()
 
-    msg = bytes('Hola server', 'utf-8')
-
     try:
+        logger.info("Client download started")
         client.connect()
         for x in range(0, 10):
             client.send(bytes('Hello World %s' % x, "utf-8"))
-            time.sleep(5)
+            time.sleep(2)
         client.send(b'exit')
     except KeyboardInterrupt:
-        logger.info("Server stopped by user")
+        logger.info("Client download stopped by user")
     except Exception as e:
         logger.error(e)
 
