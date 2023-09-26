@@ -9,19 +9,15 @@ class ConnectionThread(Thread):
     queue = None
 
     def __init__(self, name, address):
-        super(Thread, self).__init__()
+        super(ConnectionThread, self).__init__()
         self.queue = Queue
         self.name = name
         self.connection = Connection(address)
 
     def run(self):
         self.connection.send(bytes('Handshake Received %s' % self.name, "utf-8"))
-
-        while (True):
+        self.connection.listen()
+        while True:
             data = self.connection.recv()
-            response = bytes('OK Received %s' % self.name, "utf-8")
-            self.connection.send(response)
-            if (data == b'exit'):
-                break
+            print('SERVER received message: %s' % data)    
 
-        self.connection.send(bytes('EXIT Received %s' % self.name, "utf-8"))

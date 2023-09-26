@@ -1,6 +1,6 @@
 import socket
 
-from .threads_manager import ThreadsManger
+from .threads_manager import ThreadsManager
 
 
 class Server:

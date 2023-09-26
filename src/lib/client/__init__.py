@@ -1,5 +1,7 @@
 import socket
 
+from ..common.rdt_managers.selective_repeat.sender_handler import SenderHandler as Sender
+
 UDP_IP = "127.0.0.1"
 UDP_PORT = 5005
 
@@ -24,8 +26,7 @@ class Client:
         print("handshake response: %s" % data)
         self.remote_address = addr[0]
         self.remote_port = addr[1]
+        self.sender_handler = Sender(self.socket, (self.remote_ip, self.remote_port))
 
     def send(self, message):
-        self._send(message)
-        data, addr = self._receive()
-        print("response: %s" % data)
+        self.sender_handler.send(message)
