@@ -1,28 +1,27 @@
-import threading
-import socket
+from threading import Thread
+from queue import Queue
+
+from .connection import Connection
 
 
-class ConnectionThread(threading.Thread):
+class ConnectionThread(Thread):
 
     queue = None
 
-    def __init__(self, name, queue, address):
-        super(ConnectionThread, self).__init__()
-        self.queue = queue
+    def __init__(self, name, address):
+        super(Thread, self).__init__()
+        self.queue = Queue
         self.name = name
-        self.socket = socket.socket(socket.AF_INET,  # Internet
-                                    socket.SOCK_DGRAM)
-        self.client_address = address
+        self.connection = Connection(address)
 
     def run(self):
-
-        self.socket.sendto(bytes('Handshake Received %s' % self.name, "utf-8"), self.client_address)
+        self.connection.send(bytes('Handshake Received %s' % self.name, "utf-8"))
 
         while (True):
-            data = self.queue.get()
+            data = self.connection.recv()
             response = bytes('OK Received %s' % self.name, "utf-8")
-            self.socket.sendto(response, self.client_address)
+            self.connection.send(response)
             if (data == b'exit'):
                 break
 
-        self.socket.sendto(bytes('EXIT Received %s' % self.name, "utf-8"), self.client_address)
+        self.connection.send(bytes('EXIT Received %s' % self.name, "utf-8"))
