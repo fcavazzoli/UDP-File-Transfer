@@ -1,10 +1,12 @@
 from threading import Thread
 from queue import Queue
+import logging
 
 from .connection import Connection
 
 
 class ConnectionThread(Thread):
+    """Thread class. It is in charge of managing a connection from a client."""
 
     queue = None
 
@@ -18,8 +20,9 @@ class ConnectionThread(Thread):
         self.connection.send(bytes('Handshake Received %s' % self.name, "utf-8"))
 
         while (True):
-            data = self.connection.recv()
-            response = bytes('OK Received %s' % self.name, "utf-8")
+            data, addrr = self.connection.recv()
+            logging.info("Received this data: %s, from: %s", str(data), str(addrr))
+            response = bytes('OK Received for thread %s' % self.name, "utf-8")
             self.connection.send(response)
             if (data == b'exit'):
                 break

@@ -15,6 +15,7 @@ class Server:
 
     def serve(self):
         while True:
+            # waits for a new connection. When a new connection is received, it creates a new thread
             data, addr = self.socket.recvfrom(1024)         # number of bytes to be read from UDP socket
             self.logger.info("Received new connection from %s" % str(addr))
             handshake = bytes(data).decode('utf-8').split(' ')

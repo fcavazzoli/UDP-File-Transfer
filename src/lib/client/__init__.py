@@ -28,4 +28,4 @@ class Client:
     def send(self, message):
         self._send(message)
         data, addr = self._receive()
-        print("response: %s" % data)
+        print("Response from server: %s" % data)

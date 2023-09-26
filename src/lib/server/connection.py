@@ -13,6 +13,7 @@ class Connection:
         self.sock.sendto(message, self.address)
 
     def recv(self):
+        """Returns a tuple (data, address)"""
         return self.sock.recvfrom(1024)
         
     
