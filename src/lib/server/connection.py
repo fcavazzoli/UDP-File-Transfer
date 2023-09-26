@@ -9,8 +9,8 @@ class Connection:
 
     def __init__(self, address):
         self.address
-        self.socket = socket.socket(socket.AF_INET,  # Internet
-                                    socket.SOCK_DGRAM)
+        self.socket = socket.socket(socket.AF_INET,    # AF_INET = IPv4
+                                    socket.SOCK_DGRAM)  # SOCK_DGRAM = UDP
         
     def send(self, message):
         self.socket.sendto(message, address)

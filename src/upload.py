@@ -19,7 +19,7 @@ def upload(parsed_args):
     try:
         logger.info("Client upload started")
         client.send(msg)
-        logger.info("Mensaje enviado")
+        logger.info("Message sent")
         client.send(b'exit')
     except KeyboardInterrupt:
         logger.info("Server stopped by user")
