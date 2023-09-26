@@ -17,7 +17,10 @@ def upload(parsed_args):
     # TODO: subir (?
 
     try:
+        logger.info("Client upload started")
         client.send(msg)
+        logger.info("Message sent")
+        client.send(b'exit')
     except KeyboardInterrupt:
         logger.info("Server stopped by user")
     except Exception as e:
