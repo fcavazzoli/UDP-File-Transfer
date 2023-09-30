@@ -20,6 +20,8 @@ class Message:
 
     def build(self):
         header_byte = self.header.to_bytes(4, byteorder='big')
+        print(header_byte)
+        print(self.payload)
         return header_byte + self.payload
     
     def parse(message):

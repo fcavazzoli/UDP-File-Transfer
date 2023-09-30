@@ -1,5 +1,7 @@
 from threading import Thread, Event, Timer
 
+from lib.common.message import Message
+
 # La clase sender handler es la interfaz entre la capa de aplicacion y el protocolo de transporte
 
 
@@ -40,7 +42,7 @@ class Packet:
         return self.ack
 
     def get_data(self):
-        return bytes("{0} {1}".format(self.data, self.seq_num), "utf-8")
+        return Message().set_header(self.seq_num).set_payload(self.data).build()
 
 # La clase packet handler es la que se encarga de encolar los mensajes a
 # enviar, recibir los ack y enviarlos cuando es posible

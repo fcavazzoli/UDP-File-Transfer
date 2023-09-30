@@ -1,8 +1,6 @@
 from ..common.socket import Socket
 from .threads_manager import ThreadsManager
 
-DEFAULT_READABLE_SIZE = DEFAULT_MESSAGE_SIZE + SEQ_NUM_SIZE
-
 class Server:
     def __init__(self, ip, port, logger):
         self.socket = Socket.bind(ip, port)

@@ -1,7 +1,5 @@
 import logging
 
-from lib.common.message import Message
-
 
 class FileHandler:
     def __init__(self, file_path, logger: logging.Logger):
@@ -11,7 +9,6 @@ class FileHandler:
     def read_bytes(self, chunk_size):
         try:
             with open(self.file_path, 'rb') as file:
-                seq_num = 0
                 messages = []
                 print(f'chunk_size: {chunk_size}')
                 if chunk_size is None:
@@ -21,9 +18,7 @@ class FileHandler:
                         chunk = file.read(chunk_size)
                         if not chunk:
                             break
-                        message = Message().set_header(seq_num).set_payload(chunk).build()
-                        messages.append(message)
-                        seq_num += 1
+                        messages.append(chunk)
                 return messages
         except FileNotFoundError:
             self.logger.error(f'File {self.file_path} not found')

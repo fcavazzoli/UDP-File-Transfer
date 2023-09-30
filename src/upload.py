@@ -27,7 +27,10 @@ def upload(parsed_args):
 
     try:
         logger.info("Client upload started")
-        client.send(file_bytes)
+        client.connect()
+        ## [b'Aguante ', b'Boca']
+        for msg in file_bytes:
+            client.send(msg)
         logger.info("Message sent")
         client.send(b'exit')
     except KeyboardInterrupt:
