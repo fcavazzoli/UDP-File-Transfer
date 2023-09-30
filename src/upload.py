@@ -1,7 +1,10 @@
+from os import getenv
+from lib.common.file_handler import FileHandler
 from lib.helpers.network_builder import NetworkBuilder
 from lib.common.parser import parse_upload_args
 from lib.common.logger_setup import logger_setup
 
+MESSAGE_SIZE = getenv('MESSAGE_SIZE', 1024)
 
 def upload(parsed_args):
     logger = logger_setup(parsed_args)
@@ -11,14 +14,20 @@ def upload(parsed_args):
         .set_host(parsed_args.host)\
         .set_port(parsed_args.port)\
         .build()
-
-    msg = bytes('Hola server', 'utf-8')
-    # TODO: seleccionar protocolo
-    # TODO: subir (?
-
+    
+    file_path = parsed_args.src if parsed_args.src is not None else parsed_args.name
+    if file_path is None:
+        logger.error("Missing arguments --name or --src are required")
+        exit(1)
+    
+    file_bytes = FileHandler(parsed_args.name, logger).read_bytes(MESSAGE_SIZE)
+    print(file_bytes)
+    if file_bytes is None:
+        exit(1)
+    
     try:
         logger.info("Client upload started")
-        client.send(msg)
+        client.send(file_bytes)
         logger.info("Message sent")
         client.send(b'exit')
     except KeyboardInterrupt:
