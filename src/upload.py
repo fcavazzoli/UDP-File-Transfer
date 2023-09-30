@@ -1,11 +1,11 @@
 from os import getenv
+import os
 from lib.common.file_handler import FileHandler
 from lib.helpers.network_builder import NetworkBuilder
 from lib.common.parser import parse_upload_args
 from lib.common.logger_setup import logger_setup
 
-MESSAGE_SIZE = getenv('MESSAGE_SIZE', 1024)
-
+MESSAGE_SIZE = getenv('MESSAGE_SIZE', 8)
 
 def upload(parsed_args):
     logger = logger_setup(parsed_args)
