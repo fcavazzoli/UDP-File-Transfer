@@ -6,6 +6,7 @@ from .threads_manager import ThreadsManager
 class Server:
     """Server class. It is in charge of listening to incoming connections and
     managing them."""
+
     def __init__(self, udp_ip, port, logger):
         self.socket = socket.socket(socket.AF_INET,  # AF_INET = IPv4
                                     socket.SOCK_DGRAM)      # SOCK_DGRAM = UDP
@@ -22,5 +23,3 @@ class Server:
             if (handshake[0] != 'handshake'):
                 raise Exception('Invalid handshake')
             self.threads_manager.new_connection(addr)
-            
-        

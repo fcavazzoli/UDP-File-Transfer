@@ -1,5 +1,6 @@
 import logging
 
+
 class FileHandler:
     def __init__(self, file_path, logger: logging.Logger):
         self.file_path = file_path
@@ -24,7 +25,7 @@ class FileHandler:
         except PermissionError:
             self.logger.error(f'Permission denied for file {self.file_path}')
             return None
-        
+
     def write_bytes(self, file_bytes):
         try:
             with open(self.file_path, 'wb') as file:
@@ -35,4 +36,3 @@ class FileHandler:
         except PermissionError:
             self.logger.error(f'Permission denied for file {self.file_path}')
             return None
-
