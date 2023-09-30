@@ -3,6 +3,11 @@ from lib.constants import DEFAULT_IP, DEFAULT_PORT
 
 
 class NetworkBuilder:
+    """
+    Builder for network objects, either server or client. It is used to
+    configure the network object (ip, port, type, etc) and building it.
+    """
+
     def __init__(self, type):
         self.type = type
         self.logger = DummyLogger()

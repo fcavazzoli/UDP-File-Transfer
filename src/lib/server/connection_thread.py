@@ -1,10 +1,12 @@
 from threading import Thread
 from queue import Queue
+import logging
 
 from .connection import Connection
 
 
 class ConnectionThread(Thread):
+    """Thread class. It is in charge of managing a connection from a client."""
 
     queue = None
 
