@@ -21,5 +21,4 @@ class ConnectionThread(Thread):
         self.connection.listen()
         while True:
             data = self.connection.recv()
-            print('SERVER received message: %s' % data)    
-
+            print('SERVER received message: %s' % data)

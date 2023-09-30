@@ -8,14 +8,12 @@ class Connection:
 
     def __init__(self, address):
         self.socket = Socket(address)
-        
+
     def send(self, message):
         self.socket.send(message)
 
     def recv(self):
         return self.receiverHandler.recv()
-    
+
     def listen(self):
         self.receiverHandler = ReceiverHandler(self.socket)
-        
-    
