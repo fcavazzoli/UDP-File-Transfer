@@ -1,6 +1,9 @@
-# direcciones default
+# Direcciones default
 DEFAULT_IP = "localhost"
 DEFAULT_PORT = 5000
+
+#Local host
+DEFAULT_IP_ADDR = "127.0.0.1"
 
 # protocolos default
 DEFAULT_RELIABLE_PROTOCOL = "stop-and-wait"
