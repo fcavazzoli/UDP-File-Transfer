@@ -17,8 +17,18 @@ class FileHandler:
                         if not chunk:
                             break
                         file_bytes.extend(chunk)
-
                 return file_bytes
+        except FileNotFoundError:
+            self.logger.error(f'File {self.file_path} not found')
+            return None
+        except PermissionError:
+            self.logger.error(f'Permission denied for file {self.file_path}')
+            return None
+        
+    def write_bytes(self, file_bytes):
+        try:
+            with open(self.file_path, 'wb') as file:
+                file.write(file_bytes)
         except FileNotFoundError:
             self.logger.error(f'File {self.file_path} not found')
             return None
