@@ -1,11 +1,15 @@
+from os import getenv
+import os
+from lib.common.file_handler import FileHandler
+from lib.constants import DEFAULT_MESSAGE_SIZE
 from lib.helpers.network_builder import NetworkBuilder
 from lib.common.parser import parse_upload_args
 from lib.common.logger_setup import logger_setup
-import lib.File as File
+
 
 def upload(parsed_args):
     logger = logger_setup(parsed_args)
-
+    
     host = parsed_args.host
     port = parsed_args.port
     protocol = parsed_args.protocol
@@ -15,8 +19,7 @@ def upload(parsed_args):
     file = File.File(src, name)
     file.open("rb")
 
-    #TODO: Lo dejo para poder utilizar la idea. Se envia la primera porcion del archivo, los primeros 1472 bytes.
-    #Descomentar linea para probar > client.send(package) y comentar la linea client.send(msg).
+    #TODO: Lo dejo para poder utilizar la idea. Se envia la primera porcion del archivo, los primeros 1472 bytes. Se puede enviar este package para probar.
     #reads the first 1472 bytes of the file.
     #package = file.read(1472)
 
@@ -26,22 +29,28 @@ def upload(parsed_args):
         .set_port(port)\
         .build()
 
-    msg = bytes('Hola server', 'utf-8')
-    # TODO: seleccionar protocolo
-    # TODO: subir (?
+    file_path = parsed_args.src if parsed_args.src is not None else parsed_args.name
+    if file_path is None:
+        logger.error("Missing arguments --name or --src are required")
+        exit(1)
+
+    file_bytes = FileHandler(parsed_args.name, logger).read_bytes(DEFAULT_MESSAGE_SIZE)
+    print(file_bytes)
+    if file_bytes is None:
+        exit(1)
 
     try:
         logger.info("Client upload started")
-        client.send(msg)
-        #TODO: 
-        # client.send(package)
+        client.connect()
+        # [b'Aguante ', b'Boca']
+        for msg in file_bytes:
+            client.send(msg)
         logger.info("Message sent")
         client.send(b'exit')
     except KeyboardInterrupt:
         logger.info("Server stopped by user")
     except Exception as e:
         logger.error(e)
-
 
 
 if __name__ == "__main__":
