@@ -1,6 +1,7 @@
 from ..common.socket import Socket
 from .threads_manager import ThreadsManager
 
+
 class Server:
     def __init__(self, ip, port, logger):
         self.socket = Socket.bind(ip, port)

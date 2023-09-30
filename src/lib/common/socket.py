@@ -3,6 +3,8 @@ import socket
 from lib.constants import DEFAULT_MESSAGE_SIZE, SEQ_NUM_SIZE
 
 DEFAULT_READABLE_SIZE = DEFAULT_MESSAGE_SIZE + SEQ_NUM_SIZE
+
+
 class Socket:
     def bind(ip, port):
         socket = Socket()

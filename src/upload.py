@@ -6,6 +6,7 @@ from lib.helpers.network_builder import NetworkBuilder
 from lib.common.parser import parse_upload_args
 from lib.common.logger_setup import logger_setup
 
+
 def upload(parsed_args):
     logger = logger_setup(parsed_args)
 
@@ -28,7 +29,7 @@ def upload(parsed_args):
     try:
         logger.info("Client upload started")
         client.connect()
-        ## [b'Aguante ', b'Boca']
+        # [b'Aguante ', b'Boca']
         for msg in file_bytes:
             client.send(msg)
         logger.info("Message sent")
