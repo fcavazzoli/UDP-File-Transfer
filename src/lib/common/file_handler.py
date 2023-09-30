@@ -6,19 +6,20 @@ class FileHandler:
         self.file_path = file_path
         self.logger = logger
 
-    def read_bytes(self, chunk_size=None):
+    def read_bytes(self, chunk_size):
         try:
             with open(self.file_path, 'rb') as file:
+                messages = []
+                print(f'chunk_size: {chunk_size}')
                 if chunk_size is None:
                     file_bytes = file.read()
                 else:
-                    file_bytes = bytearray()
                     while True:
                         chunk = file.read(chunk_size)
                         if not chunk:
                             break
-                        file_bytes.extend(chunk)
-                return file_bytes
+                        messages.append(chunk)
+                return messages
         except FileNotFoundError:
             self.logger.error(f'File {self.file_path} not found')
             return None

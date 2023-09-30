@@ -1,5 +1,9 @@
 import socket
 
+from lib.constants import DEFAULT_MESSAGE_SIZE, SEQ_NUM_SIZE
+
+DEFAULT_READABLE_SIZE = DEFAULT_MESSAGE_SIZE + SEQ_NUM_SIZE
+
 
 class Socket:
     def bind(ip, port):
@@ -18,7 +22,7 @@ class Socket:
         self.socket.sendto(message, self.address)
 
     def recv(self):
-        return self.socket.recvfrom(1024)
+        return self.socket.recvfrom(DEFAULT_READABLE_SIZE)
 
     def change_destination(self, address):
         self.address = address
