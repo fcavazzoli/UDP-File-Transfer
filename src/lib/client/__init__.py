@@ -3,7 +3,6 @@ import socket
 # UDP_IP = "127.0.0.1"
 # UDP_PORT = 5005
 
-
 class Client:
     def __init__(self, remote_ip, remote_port, logger):
         self.socket = socket.socket(socket.AF_INET,    # AF_INET = IPv4
@@ -29,3 +28,5 @@ class Client:
         self._send(message)
         data, addr = self._receive()
         print("Response from server: %s" % data)
+
+    def send_file(self, file, operationType)
