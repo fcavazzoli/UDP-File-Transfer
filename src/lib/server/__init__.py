@@ -1,20 +1,17 @@
-import socket
-
+from ..common.socket import Socket
 from .threads_manager import ThreadsManager
 
 
 class Server:
-    def __init__(self, udp_ip, port, logger):
-        self.socket = socket.socket(socket.AF_INET,  # Internet
-                                    socket.SOCK_DGRAM)
-        self.socket.bind((udp_ip, port))
+    def __init__(self, ip, port, logger):
+        self.socket = Socket.bind(ip, port)
         self.logger = logger
         self.threads_manager = ThreadsManager()
-        print("Server started at %s:%s" % (udp_ip, port))
+        print("Server started at %s:%s" % (ip, port))
 
     def serve(self):
         while True:
-            data, addr = self.socket.recvfrom(1024)
+            data, addr = self.socket.recv()
             print("received new connection: %s" % data)
             handshake = bytes(data).decode('utf-8').split(' ')
             if (handshake[0] != 'handshake'):

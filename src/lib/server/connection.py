@@ -1,25 +1,21 @@
-import socket
-
 from ..common.rdt_managers.selective_repeat.receiver_handler import ReceiverHandler
+from ..common.socket import Socket
 
 
 class Connection:
-    address = None
     socket = None
     receiverHandler = None
 
     def __init__(self, address):
-        self.address = address
-        self.socket = socket.socket(socket.AF_INET,  # Internet
-                                    socket.SOCK_DGRAM)
+        self.socket = Socket(address)
         
     def send(self, message):
-        self.socket.sendto(message, self.address)
+        self.socket.send(message)
 
     def recv(self):
         return self.receiverHandler.recv()
     
     def listen(self):
-        self.receiverHandler = ReceiverHandler(self.socket, self.address)
+        self.receiverHandler = ReceiverHandler(self.socket)
         
     

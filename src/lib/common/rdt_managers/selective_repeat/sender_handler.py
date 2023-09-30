@@ -3,12 +3,11 @@ from threading import Thread, Event, Timer
 # La clase sender handler es la interfaz entre la capa de aplicacion y el protocolo de transporte
 
 class SenderHandler:
-
     packetHandler = None
     window = None
 
-    def __init__(self, socket, address):
-        self.packetHandler = PacketHandler(socket, address)
+    def __init__(self, socket):
+        self.packetHandler = PacketHandler(socket)
         self.packetHandler.start()
 
     def send(self, data):
@@ -44,16 +43,14 @@ class Packet:
 # La clase packet handler es la que se encarga de encolar los mensajes a enviar, recibir los ack y enviarlos cuando es posible
 
 class PacketHandler(Thread):
-    def __init__(self, socket, address):
+    def __init__(self, socket):
         super(PacketHandler, self).__init__()
         self.socket = socket
-        self.address = address
         self.window = Window(10)
 
     def run(self):
         while (True):
-            packet = self.socket.recv(1024)
-
+            packet, addr = self.socket.recv()
             ack = int(packet.decode().split(" ")[1])
 
             if(self.window.get_base() == ack):
@@ -69,7 +66,7 @@ class PacketHandler(Thread):
         self._send(packet.get_data())
 
     def _send(self, data):
-        self.socket.sendto(data, self.address)
+        self.socket.send(data)
 
     def send_available_packets(self):
         while(self.window.is_message_to_send()):

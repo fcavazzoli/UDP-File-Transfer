@@ -6,8 +6,8 @@ class ReceiverHandler:
 
     packetHandler = None
 
-    def __init__(self, socket, address):
-        self.packetHandler = PacketHandler(socket, address)
+    def __init__(self, socket):
+        self.packetHandler = PacketHandler(socket)
         self.packetHandler.start()
 
     def recv(self):
@@ -17,16 +17,15 @@ class ReceiverHandler:
 # La clase packet handler es la que se encarga de recibir los mensajes y encolarlos en el orden correcto
 
 class PacketHandler(Thread):
-    def __init__(self, socket, address):
+    def __init__(self, socket):
         super(PacketHandler, self).__init__()
         self.socket = socket
-        self.address = address
         self.window = Window(10)
         self.packet_to_read = Event()
 
     def run(self):
         while (True):
-            packet = self.socket.recv(1024)
+            packet, addr = self.socket.recv()
             seq_num = int(packet.decode().split(" ")[1])
 
             if(self.window.packet_inside_window(seq_num)):
@@ -47,7 +46,7 @@ class PacketHandler(Thread):
         return self.window.next()
 
     def send_ack(self, ack_num):
-        self.socket.sendto(("ACK " + str(ack_num)).encode(), self.address)
+        self.socket.send(("ACK " + str(ack_num)).encode())
 
 
 # La clase window es la representacion de la ventana de recepcion            
