@@ -22,3 +22,8 @@ class Message:
         header_byte = self.header.to_bytes(4, byteorder='big')
         return header_byte + self.payload
     
+    def parse(message):
+        header = int.from_bytes(message[:4], byteorder='big')
+        payload = message[4:]
+        return Message().set_header(header).set_payload(payload)
+    

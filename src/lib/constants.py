@@ -12,3 +12,7 @@ DEFAULT_FILE_NAME = "file.txt"
 
 # log file name
 DEFAULT_LOG_FILE_NAME = "app.log"
+
+# message size
+DEFAULT_MESSAGE_SIZE = 8
+SEQ_NUM_SIZE = 4
