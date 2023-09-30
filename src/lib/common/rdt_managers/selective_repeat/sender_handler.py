@@ -25,7 +25,7 @@ class Packet:
         self.seq_num = seq_num
     
     def set_timer(self, resend):
-        self.timer = Timer(10, resend, [self.get_data()])
+        self.timer = Timer(10, resend, [self])
         self.timer.start()
 
     def cancel_timer(self):
@@ -54,8 +54,6 @@ class PacketHandler(Thread):
         while (True):
             packet = self.socket.recv(1024)
 
-            print('received message: %s' % packet)
-
             ack = int(packet.decode().split(" ")[1])
 
             if(self.window.get_base() == ack):
@@ -66,8 +64,9 @@ class PacketHandler(Thread):
 
             self.send_available_packets()
 
-    def timeout(self, data):
-        self._send(data)
+    def timeout(self, packet):
+        packet.set_timer(self.timeout)
+        self._send(packet.get_data())
 
     def _send(self, data):
         self.socket.sendto(data, self.address)

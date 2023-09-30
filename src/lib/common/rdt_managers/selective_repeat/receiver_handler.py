@@ -27,18 +27,13 @@ class PacketHandler(Thread):
     def run(self):
         while (True):
             packet = self.socket.recv(1024)
-
-            print('received message: %s' % packet)
-
             seq_num = int(packet.decode().split(" ")[1])
-
-            print('received seq_num: %s' % seq_num)
 
             if(self.window.packet_inside_window(seq_num)):
                 self.window.store(seq_num, packet)
                 self.send_ack(seq_num)
  
-            if(self.window.packet_was_received(seq_num)):
+            elif(self.window.packet_was_received(seq_num)):
                 self.send_ack(seq_num)
 
             if(self.window.packets_to_read()):

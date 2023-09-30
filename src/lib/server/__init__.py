@@ -10,6 +10,7 @@ class Server:
         self.socket.bind((udp_ip, port))
         self.logger = logger
         self.threads_manager = ThreadsManager()
+        print("Server started at %s:%s" % (udp_ip, port))
 
     def serve(self):
         while True:
