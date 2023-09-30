@@ -1,6 +1,4 @@
 import struct
-from hashlib import md5
-
 
 PACKET_FORMAT = "!II???"
 """
@@ -22,9 +20,9 @@ class Packet:
         # Header
         self.seq_num = seq_num      #32 bits
         self.ack_num = 0 if ack_num is None else ack_num            #32 bits
-        self.ack_bit = ack_bit      #1 byte (boolean)
-        self.syn_bit = syn_bit      #1 byte (boolean)
-        self.fin_bit = fin_bit      #1 byte (boolean)
+        self.ack_bit: bool = ack_bit      #1 byte (boolean)
+        self.syn_bit: bool = syn_bit      #1 byte (boolean)
+        self.fin_bit: bool = fin_bit      #1 byte (boolean)
         # self.data_size = data_size
         # self.protocol = "UDP"
 
@@ -60,24 +58,23 @@ class Packet:
         header_length = struct.calcsize(PACKET_FORMAT)
         header_length_checksum = header_length + 1        # +1 para el byte del checksum
         
-        # verificar checksum
+        #decodifico el header (junto al checksum)
         header = struct.unpack(PACKET_FORMAT + 'B', packet_bytes[:header_length_checksum]) 
+
+        # verificar checksum del header
         received_checksum = header[-1]
         calculated_checksum = self.calculate_checksum(packet_bytes[:header_length])
         if received_checksum != calculated_checksum:
             raise ValueError("Checksum incorrecto, se dropea el paquete")
 
-
-        #decodifico el header
-        decoded_packet = struct.unpack(PACKET_FORMAT, packet_bytes[:header_length])
-        #decodifico el payload
-        decoded_payload = packet_bytes[header_length+1:]
+        #decodifico el payload (desde el checksum en adelante)
+        decoded_payload = packet_bytes[header_length_checksum:]
         return Packet(
-            decoded_packet[0],
-            decoded_packet[1],
-            decoded_packet[2],
-            decoded_packet[3],
-            decoded_packet[4],
+            header[0],
+            header[1],
+            header[2],
+            header[3],
+            header[4],
             decoded_payload
         )
     
@@ -87,6 +84,8 @@ class Packet:
         Calcula un checksum super simple mediante la suma de los valores de los bytes en los datos.
         Si es necesario se puede modificar esta misma función para hacer un algoritmo más complejo.
         """
+        #NOTE: con "from hashlib import md5"?
+
         checksum = 0
         for byte in data:
             checksum += byte
@@ -97,7 +96,7 @@ class Packet:
 # ejemplo de uso
 # encodeo
 data_en_formato_bytes = bytes("hola mundo loco", "utf-8")
-paquete = Packet(12211, 22222, False, False, True, data_en_formato_bytes)
+paquete = Packet(333, 22222, False, False, True, data_en_formato_bytes)
 paquete_encoded = paquete.to_bytes()
 print(paquete_encoded)
 
