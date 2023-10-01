@@ -1,5 +1,6 @@
-from ..common.rdt_managers.selective_repeat.sender_handler import SenderHandler as Sender
+from ..common.rdt_managers import RDTManagers
 from ..common.socket import Socket
+from ..common.configs import SingletonConfiguration
 
 
 class Client:
@@ -17,7 +18,8 @@ class Client:
         self._send(bytes('handshake', "utf-8"))
         data, addr = self._receive()
         self.socket.change_destination(addr)
-        self.sender_handler = Sender(self.socket)
+        rdt_type = SingletonConfiguration().get('protocol')
+        self.sender_handler = RDTManagers.get_sender_handler(rdt_type, self.socket)
 
     def send(self, message):
         print(f'sending {message}')

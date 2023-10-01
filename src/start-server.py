@@ -10,6 +10,7 @@ def run_server(parsed_args):
         .set_logger(logger)\
         .set_host(parsed_args.host)\
         .set_port(parsed_args.port)\
+        .set_protocol(parsed_args.protocol)\
         .build()
     try:
         logger.info("Server started")

@@ -12,13 +12,14 @@ def download(parsed_args):
         .set_logger(logger)\
         .set_host(parsed_args.host)\
         .set_port(parsed_args.port)\
+        .set_protocol(parsed_args.protocol)\
         .build()
 
     try:
         logger.info("Client download started")
         client.connect()
         for x in range(20):
-            client.send(bytes('SEQ', "utf-8"))
+            client.send(bytes('SEQ %s' % x, "utf-8"))
             time.sleep(1)
     except KeyboardInterrupt:
         logger.info("Client download stopped by user")
