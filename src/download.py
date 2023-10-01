@@ -1,4 +1,5 @@
 import time
+from lib.common.message import Message
 
 from lib.helpers.network_builder import NetworkBuilder
 from lib.common.parser import parse_download_args
@@ -19,7 +20,7 @@ def download(parsed_args):
         logger.info("Client download started")
         client.connect()
         for x in range(20):
-            client.send(bytes('SEQ %s' % x, "utf-8"))
+            client.send(Message.build_data_payload(b'SEQ %i' % x))
             time.sleep(1)
     except KeyboardInterrupt:
         logger.info("Client download stopped by user")

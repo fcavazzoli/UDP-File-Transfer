@@ -26,9 +26,8 @@ class PacketHandler(Thread):
 
     def recv(self):
             while True: 
-                packet, addr = self.socket.recv()
-                msg = Message.parse(packet)
-                seq_num = msg.get_header()
+                msg = self.socket.recv_data()
+                seq_num = msg.get_header().seq_num
                 payload = msg.get_payload()
 
                 self.send_ack(seq_num)
@@ -41,5 +40,6 @@ class PacketHandler(Thread):
 
 
     def send_ack(self, ack_num):
-        self.socket.send(("ACK " + str(ack_num)).encode())
+        data = Message().set_header(0, ack_num, 'ACK').set_payload(b'').build()
+        self.socket.send(data)
 
