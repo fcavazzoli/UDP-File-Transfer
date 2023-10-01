@@ -22,4 +22,5 @@ class Client:
         self.sender_handler = RDTManagers.get_sender_handler(rdt_type, self.socket)
 
     def send(self, message):
+        print(f'sending {message}')
         self.sender_handler.send(message)

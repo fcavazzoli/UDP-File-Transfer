@@ -2,6 +2,8 @@ from threading import Thread
 from queue import Queue
 import logging
 
+from lib.common.message import Message
+
 from .connection import Connection
 
 
@@ -21,4 +23,10 @@ class ConnectionThread(Thread):
         self.connection.listen()
         while True:
             data = self.connection.recv()
-            print('SERVER received message: %s' % data)
+            opt = Message.unwrap_operation_type(data)
+            payload = Message.unwrap_payload_data(data)
+            # opt tiene el tipo de operacion (METADATA o DATA)
+            # el payload de un mensaje METADATA es el nombre del archivo
+            # el payload de un mensaje DATA es un conjunto de bytes del contenido del archivo
+            print(f'SERVER received message:\n opt:{opt} - payload:{payload},')
+           
