@@ -14,6 +14,7 @@ def upload(parsed_args):
         .set_logger(logger)\
         .set_host(parsed_args.host)\
         .set_port(parsed_args.port)\
+        .set_protocol(parsed_args.protocol)\
         .build()
 
     file_path = parsed_args.src if parsed_args.src is not None else parsed_args.name

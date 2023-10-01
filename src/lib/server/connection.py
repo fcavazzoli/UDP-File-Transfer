@@ -1,5 +1,6 @@
-from ..common.rdt_managers.selective_repeat.receiver_handler import ReceiverHandler
+from ..common.rdt_managers import RDTManagers
 from ..common.socket import Socket
+from ..common.configs import SingletonConfiguration
 
 
 class Connection:
@@ -8,6 +9,7 @@ class Connection:
 
     def __init__(self, address):
         self.socket = Socket(address)
+        self.rdt_type = SingletonConfiguration().get('protocol')
 
     def send(self, message):
         self.socket.send(message)
@@ -16,4 +18,4 @@ class Connection:
         return self.receiverHandler.recv()
 
     def listen(self):
-        self.receiverHandler = ReceiverHandler(self.socket)
+        self.receiverHandler = RDTManagers.get_receiver_handler(self.rdt_type, self.socket)

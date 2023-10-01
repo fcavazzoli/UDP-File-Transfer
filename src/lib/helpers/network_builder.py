@@ -1,5 +1,6 @@
 from lib.common.logger_setup import DummyLogger
 from lib.constants import DEFAULT_IP, DEFAULT_PORT
+from lib.common.configs import SingletonConfiguration
 
 
 class NetworkBuilder:
@@ -24,6 +25,11 @@ class NetworkBuilder:
 
     def set_host(self, host):
         self.host = host
+        return self
+    
+    def set_protocol(self, protocol):
+        self.rdt = protocol
+        SingletonConfiguration().set('protocol', protocol)
         return self
 
     def build(self):
