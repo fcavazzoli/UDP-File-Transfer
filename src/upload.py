@@ -1,6 +1,7 @@
 from os import getenv
 import os
 from lib.common.file_handler import FileHandler
+from lib.common.message import Message
 from lib.constants import DEFAULT_MESSAGE_SIZE
 from lib.helpers.network_builder import NetworkBuilder
 from lib.common.parser import parse_upload_args
@@ -16,13 +17,6 @@ def upload(parsed_args):
     src = parsed_args.src
     name = parsed_args.name
 
-    file = File.File(src, name)
-    file.open("rb")
-
-    #TODO: Lo dejo para poder utilizar la idea. Se envia la primera porcion del archivo, los primeros 1472 bytes. Se puede enviar este package para probar.
-    #reads the first 1472 bytes of the file.
-    #package = file.read(1472)
-
     client = NetworkBuilder('CLIENT')\
         .set_logger(logger)\
         .set_host(host)\
@@ -35,18 +29,17 @@ def upload(parsed_args):
         exit(1)
 
     file_bytes = FileHandler(parsed_args.name, logger).read_bytes(DEFAULT_MESSAGE_SIZE)
-    print(file_bytes)
     if file_bytes is None:
         exit(1)
 
     try:
         logger.info("Client upload started")
         client.connect()
-        # [b'Aguante ', b'Boca']
+        client.send(Message.build_metadata_payload(name))
         for msg in file_bytes:
-            client.send(msg)
+            client.send(Message.build_data_payload(msg))
         logger.info("Message sent")
-        client.send(b'exit')
+        client.send(Message.build_data_payload(b'exit'))
     except KeyboardInterrupt:
         logger.info("Server stopped by user")
     except Exception as e:
