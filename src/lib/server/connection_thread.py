@@ -28,5 +28,5 @@ class ConnectionThread(Thread):
             # opt tiene el tipo de operacion (METADATA o DATA)
             # el payload de un mensaje METADATA es el nombre del archivo
             # el payload de un mensaje DATA es un conjunto de bytes del contenido del archivo
-            print('SERVER received message:\n - payload:%s,' % opt % payload)
+            print('SERVER received message: {0}\n - payload:{1},'.format(opt, payload))
            

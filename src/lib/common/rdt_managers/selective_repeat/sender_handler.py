@@ -57,7 +57,6 @@ class PacketHandler(Thread):
     def run(self):
         while (True):
             msg = self.socket.recv_ack()
-            print('ACK RECEIVED', msg.get_header().ack_num)
             ack = msg.get_header().ack_num
 
             if (self.window.get_base() == ack):

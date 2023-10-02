@@ -29,7 +29,7 @@ def upload(parsed_args):
         logger.error("Missing arguments --name or --src are required")
         exit(1)
 
-    file_bytes = FileHandler(parsed_args.name, logger).read_bytes(DEFAULT_MESSAGE_SIZE)
+    file_bytes = FileHandler(parsed_args.name, logger).read_bytes(DEFAULT_MESSAGE_SIZE-1) # tenemos que restarle 1 porque el primer byte es el tipo de operacion
     if file_bytes is None:
         exit(1)
 

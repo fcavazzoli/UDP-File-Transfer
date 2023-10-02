@@ -2,10 +2,10 @@ import socket
 from queue import Queue
 from threading import Thread
 
-from lib.constants import DEFAULT_MESSAGE_SIZE, SEQ_NUM_SIZE
+from lib.constants import DEFAULT_MESSAGE_SIZE, SEQ_NUM_SIZE, ACK_NUM_SIZE, HEADER_TYPE_SIZE
 from lib.common.message import Message
 
-DEFAULT_READABLE_SIZE = DEFAULT_MESSAGE_SIZE + SEQ_NUM_SIZE
+DEFAULT_READABLE_SIZE = DEFAULT_MESSAGE_SIZE + SEQ_NUM_SIZE + ACK_NUM_SIZE + HEADER_TYPE_SIZE
 
 
 class Socket:

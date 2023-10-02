@@ -49,7 +49,7 @@ class PacketHandler(Thread):
         return self.window.next()
 
     def send_ack(self, ack_num):
-        data = Message().set_header(0, ack_num, 'ACK').build()
+        data = Message().set_header(0, ack_num, 'ACK').set_payload(b'').build()
         self.socket.send(data)
 
 
