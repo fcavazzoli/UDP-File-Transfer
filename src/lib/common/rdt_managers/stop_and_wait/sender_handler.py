@@ -41,7 +41,7 @@ class Packet:
         return self.ack
 
     def get_data(self):
-        return Message().set_header(self.seq_num).set_payload(self.data).build()
+        return Message().set_header(self.seq_num, 0, 'DATA').set_payload(self.data).build()
 
 # La clase packet handler es la que se encarga de encolar los mensajes a
 # enviar, recibir los ack y enviarlos cuando es posible
@@ -64,14 +64,16 @@ class PacketHandler():
         packet = Packet(data, self.next_seq_num)
         packet.set_timer(self.timeout)
         self.sended[self.next_seq_num] = packet
+        print('SENDING', self.next_seq_num)
         self._send(packet.get_data())
         self.wait_ack()
 
 
     def wait_ack(self):
         while (True):
-            ack_data, addr = self.socket.recv()
-            ack = int(ack_data.decode().split(" ")[1])
+            msg = self.socket.recv_ack()
+            print('ACK RECEIVED', msg.get_header().ack_num)
+            ack = msg.get_header().ack_num
             if (ack == self.next_seq_num):
                 self.sended[ack].cancel_timer()
                 self.next_seq_num += 1

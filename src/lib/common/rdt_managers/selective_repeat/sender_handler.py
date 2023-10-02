@@ -42,7 +42,7 @@ class Packet:
         return self.ack
 
     def get_data(self):
-        return Message().set_header(self.seq_num).set_payload(self.data).build()
+        return Message().set_header(self.seq_num, 0, 'DATA').set_payload(self.data).build()
 
 # La clase packet handler es la que se encarga de encolar los mensajes a
 # enviar, recibir los ack y enviarlos cuando es posible
@@ -56,8 +56,8 @@ class PacketHandler(Thread):
 
     def run(self):
         while (True):
-            packet, addr = self.socket.recv()
-            ack = int(packet.decode().split(" ")[1])
+            msg = self.socket.recv_ack()
+            ack = msg.get_header().ack_num
 
             if (self.window.get_base() == ack):
                 self.window.clean_ack_packets()

@@ -1,5 +1,4 @@
 from threading import Thread, Event
-
 from lib.common.message import Message
 
 # La clase receiver handler es la interfaz entre la capa de aplicacion y el protocolo de transporte
@@ -28,9 +27,8 @@ class PacketHandler(Thread):
 
     def run(self):
         while (True):
-            packet, addr = self.socket.recv()
-            msg = Message.parse(packet)
-            seq_num = msg.get_header()
+            msg = self.socket.recv_data()
+            seq_num = msg.get_header().seq_num
             payload = msg.get_payload()
 
             if (self.window.packet_inside_window(seq_num)):
@@ -51,7 +49,8 @@ class PacketHandler(Thread):
         return self.window.next()
 
     def send_ack(self, ack_num):
-        self.socket.send(("ACK " + str(ack_num)).encode())
+        data = Message().set_header(0, ack_num, 'ACK').set_payload(b'').build()
+        self.socket.send(data)
 
 
 # La clase window es la representacion de la ventana de recepcion

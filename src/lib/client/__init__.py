@@ -18,9 +18,10 @@ class Client:
         self._send(bytes('handshake', "utf-8"))
         data, addr = self._receive()
         self.socket.change_destination(addr)
+        self.socket.listen()
         rdt_type = SingletonConfiguration().get('protocol')
         self.sender_handler = RDTManagers.get_sender_handler(rdt_type, self.socket)
 
     def send(self, message):
-        print(f'sending {message}')
+        print('sending %s' %message)
         self.sender_handler.send(message)

@@ -12,7 +12,7 @@ class RDTManagers:
         raise Exception('Invalid type')
         
     def get_receiver_handler(type, socket):
-        if (type == 'selective'):
+        if (type == 'selective-repeat'):
             return SRReceiverHandler(socket)
         elif (type == 'stop-and-wait'):
             return SWReceiverHandler(socket)
@@ -20,7 +20,7 @@ class RDTManagers:
 
         
     def get_sender_handler(type, socket):
-        if (type == 'selective'):
+        if (type == 'selective-repeat'):
             return SRSenderHandler(socket)
         elif (type == 'stop-and-wait'):
             return SWSenderHandler(socket)

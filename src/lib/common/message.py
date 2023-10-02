@@ -1,14 +1,23 @@
+from types import SimpleNamespace
+
 OPT_TYPE = {
     'METADATA': 0,
     'DATA': 1,
+}
+ 
+HEADER_TYPE = {
+    'DATA': 0,
+    'ACK': 1,
 }
 class Message:
     def __init__(self):
         self.header = None
         self.payload = None
 
-    def set_header(self, seq_num):
-        self.header = seq_num
+    def set_header(self, seq_num, ack_num, type):
+        self.type = HEADER_TYPE[type]
+        self.seq_num = seq_num
+        self.ack_num = ack_num
         return self
 
     def set_payload(self, payload):
@@ -16,7 +25,7 @@ class Message:
         return self
 
     def get_header(self):
-        return self.header
+        return SimpleNamespace(type=self.type, seq_num=self.seq_num, ack_num=self.ack_num)
 
     def get_payload(self):
         return self.payload
@@ -25,13 +34,15 @@ class Message:
         return list(OPT_TYPE.keys())[list(OPT_TYPE.values()).index(int.from_bytes(self.payload[:1], byteorder='big'))]
     
     def build(self):
-        header_byte = self.header.to_bytes(4, byteorder='big')
+        header_byte = self.type.to_bytes(4, byteorder='big') + self.seq_num.to_bytes(4, byteorder='big') + self.ack_num.to_bytes(4, byteorder='big')
         return header_byte + self.payload
 
     def parse(message):
-        header = int.from_bytes(message[:4], byteorder='big')
-        payload = message[4:]
-        return Message().set_header(header).set_payload(payload)
+        type = Message.unwrap_header_type(message)
+        seq_num = int.from_bytes(message[4:8], byteorder='big')
+        ack_num = int.from_bytes(message[8:12], byteorder='big')
+        payload = message[12:]
+        return Message().set_header(seq_num, ack_num, type).set_payload(payload)
      
     def build_metadata_payload(file_name, file_size=0):
         operation_type = OPT_TYPE['METADATA'].to_bytes(1, byteorder='big')
@@ -44,8 +55,16 @@ class Message:
         return operation_type + data
     
     def unwrap_operation_type(payload):
-        print(f'payload: {payload}')
         return list(OPT_TYPE.keys())[list(OPT_TYPE.values()).index(int.from_bytes(payload[:1], byteorder='big'))]
+    
+    def unwrap_header_type(header):
+        return list(HEADER_TYPE.keys())[list(HEADER_TYPE.values()).index(int.from_bytes(header[:4], byteorder='big'))]
     
     def unwrap_payload_data(payload):
         return payload[1:]
+    
+    def is_ack(self):
+        return self.type == HEADER_TYPE['ACK']
+    
+    def is_data(self):
+        return self.type == HEADER_TYPE['DATA']

@@ -9,6 +9,7 @@ class Connection:
 
     def __init__(self, address):
         self.socket = Socket(address)
+        self.socket.listen()
         self.rdt_type = SingletonConfiguration().get('protocol')
 
     def send(self, message):
