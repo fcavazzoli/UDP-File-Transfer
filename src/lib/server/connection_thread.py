@@ -4,7 +4,7 @@ import logging
 
 from lib.common.message import Message
 
-from .connection import Connection
+from lib.common.connection import Connection
 
 
 class ConnectionThread(Thread):
@@ -16,11 +16,11 @@ class ConnectionThread(Thread):
         super(ConnectionThread, self).__init__()
         self.queue = Queue
         self.name = name
-        self.connection = Connection(address)
+        self.address = address
+        self.connection = Connection()
 
     def run(self):
-        self.connection.send(bytes('Handshake Received %s' % self.name, "utf-8"))
-        self.connection.listen()
+        self.connection.accept(self.address)
         while True:
             data = self.connection.recv()
             opt = Message.unwrap_operation_type(data)
