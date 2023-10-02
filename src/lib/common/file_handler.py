@@ -29,7 +29,7 @@ class FileHandler:
 
     def write_bytes(self, file_bytes):
         try:
-            with open(self.file_path, 'wb') as file:
+            with open(self.file_path, 'ab') as file:
                 file.write(file_bytes)
         except FileNotFoundError:
             self.logger.error(f'File {self.file_path} not found')
