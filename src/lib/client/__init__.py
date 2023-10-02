@@ -46,3 +46,10 @@ class Client:
     def send(self, message):
         print(f'Sending: {message}')
         self.sender_handler.send(message)
+
+    def close(self):
+        if self.socket.socket:
+            self.socket.socket.close()
+            print("Client socket closed.")
+        else: 
+            print("Couldn't close client socket.")

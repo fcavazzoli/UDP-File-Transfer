@@ -14,6 +14,7 @@ class NetworkBuilder:
         self.logger = DummyLogger()
         self.port = DEFAULT_PORT
         self.host = DEFAULT_IP
+        self.network_host = None
 
     def set_logger(self, logger):
         self.logger = logger
@@ -37,11 +38,19 @@ class NetworkBuilder:
             return self._build_server()
         elif self.type == 'CLIENT':
             return self._build_client()
-
+        
+    def close(self):
+        if self.network_host:
+            self.network_host.close() 
+    
     def _build_server(self):
         from lib.server import Server
-        return Server(self.host, self.port, self.logger)
-
+        server = Server(self.host, self.port, self.logger)
+        self.network_object = server
+        return server
+    
     def _build_client(self):
         from lib.client import Client
-        return Client(self.host, self.port, self.logger)
+        client = Client(self.host, self.port, self.logger)
+        self.network_object = client
+        return client

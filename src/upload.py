@@ -64,6 +64,10 @@ def upload(parsed_args):
             else:
                 logger.error("Max retries reached. Upload failed.")
                 break
+        finally:
+            if client.socket and retry_count >= MAX_RETRIES:
+                logger.info("Connection closed.")
+                client.close()  # Close the connection whether it succeeded or failed
 
 if __name__ == "__main__":
     parsed_args = parse_upload_args()

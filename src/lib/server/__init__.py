@@ -17,3 +17,10 @@ class Server:
             if (handshake[0] != 'handshake'):
                 raise Exception('Invalid handshake')
             self.threads_manager.new_connection(addr)
+
+    def close(self):
+        if self.socket.socket:
+            self.socket.socket.close()
+            print("Server socket closed.")
+        else: 
+            print("Couldn't close server socket.")
