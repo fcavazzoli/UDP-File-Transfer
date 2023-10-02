@@ -18,11 +18,19 @@ class Socket:
 
     def send(self, message):
         if (self.address is None):
-            raise Exception('Destination address not set')
+            raise Exception('Destination address not set.')
         self.socket.sendto(message, self.address)
-
+    
     def recv(self):
-        return self.socket.recvfrom(DEFAULT_READABLE_SIZE)
+        try:
+            data, addr = self.socket.recvfrom(DEFAULT_READABLE_SIZE)
+            return data, addr
+        except socket.timeout:
+            raise TimeoutError("Timeout while waiting for data from the server.")
+        except socket.error as e:
+            raise Exception(f"Socket error during receive: {e}")
+        except Exception as e:
+            raise Exception(f"Error during receive: {e}")
 
     def change_destination(self, address):
         self.address = address

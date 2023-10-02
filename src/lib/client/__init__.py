@@ -1,3 +1,5 @@
+import socket
+from lib.common.logger_setup import logger_setup
 from ..common.rdt_managers import RDTManagers
 from ..common.socket import Socket
 from ..common.configs import SingletonConfiguration
@@ -9,18 +11,38 @@ class Client:
         self.logger = logger
 
     def _send(self, message):
-        self.socket.send(message)
+        try:
+            self.socket.send(message)
+        except self.socket.error as e:
+            print(f"Failed to send message: {e}")
+            self.logger.error(f"Failed to send message: {e}")        
 
     def _receive(self):
-        return self.socket.recv()
+        try:
+            self.socket.socket.settimeout(10)
+            data, addr = self.socket.recv()
+            return data, addr
+        except socket.timeout:
+            self.logger.error("Timeout while waiting for a response from the server.")
+        except Exception as e:
+            self.logger.error(f"Couldn't receive any data.")
 
     def connect(self):
-        self._send(bytes('handshake', "utf-8"))
-        data, addr = self._receive()
-        self.socket.change_destination(addr)
-        rdt_type = SingletonConfiguration().get('protocol')
-        self.sender_handler = RDTManagers.get_sender_handler(rdt_type, self.socket)
+        try:
+            self.logger.info("Connecting to server...")
+            self._send(bytes('handshake', "utf-8"))
+            self.logger.info("Sending handshake message... please wait.")
+            data, addr = self._receive()
+            self.logger.info(f"Received data: {data}, Address: {addr}")
+            self.socket.change_destination(addr)
+            self.logger.info("Changed destination")
+            rdt_type = SingletonConfiguration().get('protocol')
+            self.logger.info(f"Selected protocol: {rdt_type}")
+            self.sender_handler = RDTManagers.get_sender_handler(rdt_type, self.socket)
+            self.logger.info("The connection has been established.")
+        except Exception as e:
+            self.logger.error(f"Couldn't establish a connection.")
 
     def send(self, message):
-        print(f'sending {message}')
+        print(f'Sending: {message}')
         self.sender_handler.send(message)
