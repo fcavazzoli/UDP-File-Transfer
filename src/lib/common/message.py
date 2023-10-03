@@ -52,7 +52,6 @@ class Message:
         action_type = 1 if action == 'upload' else 0
         action_type_bytes = action_type.to_bytes(1, byteorder='big')
         file_name_bytes = bytes(file_name, 'utf-8')
-        print('file_name_bytes: ', operation_type + action_type_bytes + file_name_bytes)
         return operation_type + action_type_bytes + file_name_bytes
 
     def build_data_payload(data):

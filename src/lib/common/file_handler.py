@@ -1,16 +1,17 @@
 import logging
 
+from lib.common.configs import SingletonConfiguration
+
 
 class FileHandler:
-    def __init__(self, file_path, logger: logging.Logger):
+    def __init__(self, file_path):
         self.file_path = file_path
-        self.logger = logger
+        self.logger = SingletonConfiguration().get('logger')
 
     def read_bytes(self, chunk_size):
         try:
             with open(self.file_path, 'rb') as file:
                 messages = []
-                print('chunk_size: {0}'.format(chunk_size))
                 if chunk_size is None:
                     file_bytes = file.read()
                 else:
