@@ -1,4 +1,5 @@
 import time
+from lib.common.file_handler import FileHandler
 from lib.common.message import Message
 
 from lib.helpers.network_builder import NetworkBuilder
@@ -19,11 +20,21 @@ def download(parsed_args):
     try:
         logger.info("Client download started")
         client.connect()
-        for x in range(20):
-            client.send(Message.build_data_payload(b'SEQ %i' % x))
-            time.sleep(1)
+        client.send(Message.build_metadata_payload(parsed_args.name, 'download'))
+        file_handler = FileHandler('downloads/' + parsed_args.name, logger)
+        while True:
+            data = client.recv()
+            opt = Message.unwrap_operation_type(data)
+            payload = Message.unwrap_payload_data(data)
+            if opt == 'METADATA':
+                if payload == b'ERROR_FILE_DOES_NOT_EXIST':
+                    break
+            if payload == b'exit':
+                break
+            file_handler.write_bytes(payload)
     except KeyboardInterrupt:
         logger.info("Client download stopped by user")
+        exit(0)
     except Exception as e:
         logger.error(e)
 

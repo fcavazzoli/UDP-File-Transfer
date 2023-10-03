@@ -68,7 +68,6 @@ class PacketHandler():
         self._send(packet.get_data())
         self.wait_ack()
 
-
     def wait_ack(self):
         while (True):
             msg = self.socket.recv_ack()
@@ -78,4 +77,3 @@ class PacketHandler():
                 self.sended[ack].cancel_timer()
                 self.next_seq_num += 1
                 return
-

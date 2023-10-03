@@ -26,7 +26,7 @@ class NetworkBuilder:
     def set_host(self, host):
         self.host = host
         return self
-    
+
     def set_protocol(self, protocol):
         self.rdt = protocol
         SingletonConfiguration().set('protocol', protocol)

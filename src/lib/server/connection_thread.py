@@ -3,6 +3,7 @@ from queue import Queue
 import logging
 
 from lib.common.message import Message
+from lib.server.FTPServer import FTPServer
 
 from lib.common.connection import Connection
 
@@ -21,12 +22,17 @@ class ConnectionThread(Thread):
 
     def run(self):
         self.connection.accept(self.address)
+        ftp_server = FTPServer()
         while True:
             data = self.connection.recv()
             opt = Message.unwrap_operation_type(data)
             payload = Message.unwrap_payload_data(data)
-            # opt tiene el tipo de operacion (METADATA o DATA)
-            # el payload de un mensaje METADATA es el nombre del archivo
-            # el payload de un mensaje DATA es un conjunto de bytes del contenido del archivo
+            print('OPT: ', opt)
+            if opt == 'METADATA':
+                if Message.unwrap_action_type(data) == 0:  # 0 = download
+                    print('SERVER received download message')
+                    ftp_server.handle_download(opt, payload, self.connection)
+            if payload == b'exit':
+                print('SERVER received exit message')
+            ftp_server.handle_new_message(opt, payload)
             print('SERVER received message: {0}\n - payload:{1},'.format(opt, payload))
-           
