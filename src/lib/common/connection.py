@@ -1,3 +1,5 @@
+from socket import timeout
+
 from .rdt_managers import RDTManagers
 from .socket import Socket
 from .configs import SingletonConfiguration
@@ -6,14 +8,26 @@ from .configs import SingletonConfiguration
 class Connection:
     socket = None
     receiverHandler = None
+    connection_retry = 0
 
     def __init__(self):
         self.rdt_type = SingletonConfiguration().get('protocol')
 
     def connect(self, address):
         self.socket = Socket(address)
-        self.socket.send(b'handshake')
-        recv, addr = self.socket.recv()
+        while True: 
+            try: 
+                self.socket.set_timeout(10)
+                self.socket.send(b'handshake')
+                recv, addr = self.socket.recv()
+                break
+            except timeout as e:
+                if self.connection_retry >= 5:
+                    raise 'Socket connection timeout'
+                self.connection_retry += 1
+                print ('Connection timeout, retrying...')
+                continue
+        self.socket.set_timeout(None)
         self.socket.change_destination(addr)
         self.socket.listen()
         self.config_protocol()

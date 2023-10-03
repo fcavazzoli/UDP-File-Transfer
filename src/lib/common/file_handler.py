@@ -10,7 +10,7 @@ class FileHandler:
         try:
             with open(self.file_path, 'rb') as file:
                 messages = []
-                print(f'chunk_size: {chunk_size}')
+                print('chunk_size: {0}'.format(chunk_size))
                 if chunk_size is None:
                     file_bytes = file.read()
                 else:
@@ -21,10 +21,10 @@ class FileHandler:
                         messages.append(chunk)
                 return messages
         except FileNotFoundError:
-            self.logger.error(f'File {self.file_path} not found')
+            self.logger.error('File {0} not found'.format(self.file_path))
             return None
         except PermissionError:
-            self.logger.error(f'Permission denied for file {self.file_path}')
+            self.logger.error('Permission denied for file {0}'.format(self.file_path))
             return None
 
     def write_bytes(self, file_bytes):
@@ -32,8 +32,8 @@ class FileHandler:
             with open(self.file_path, 'ab') as file:
                 file.write(file_bytes)
         except FileNotFoundError:
-            self.logger.error(f'File {self.file_path} not found')
+            self.logger.error('File {0} not found'.format(self.file_path))
             return None
         except PermissionError:
-            self.logger.error(f'Permission denied for file {self.file_path}')
+            self.logger.error('Permission denied for file {0}'.format(self.file_path))
             return None
