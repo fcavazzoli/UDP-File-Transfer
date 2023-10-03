@@ -10,7 +10,7 @@ from lib.common.logger_setup import logger_setup
 
 def upload(parsed_args):
     logger = logger_setup(parsed_args)
-    
+
     host = parsed_args.host
     port = parsed_args.port
     protocol = parsed_args.protocol
@@ -29,7 +29,8 @@ def upload(parsed_args):
         logger.error("Missing arguments --name or --src are required")
         exit(1)
 
-    file_bytes = FileHandler(parsed_args.name, logger).read_bytes(DEFAULT_MESSAGE_SIZE-1) # tenemos que restarle 1 porque el primer byte es el tipo de operacion
+    # tenemos que restarle 1 porque el primer byte es el tipo de operacion
+    file_bytes = FileHandler(parsed_args.name, logger).read_bytes(DEFAULT_MESSAGE_SIZE - 1)
     if file_bytes is None:
         exit(1)
 

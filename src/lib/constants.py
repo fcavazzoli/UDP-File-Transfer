@@ -2,7 +2,7 @@
 DEFAULT_IP = "localhost"
 DEFAULT_PORT = 5000
 
-#Local host
+# Local host
 DEFAULT_IP_ADDR = "127.0.0.1"
 
 # protocolos default

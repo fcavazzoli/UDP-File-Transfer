@@ -21,29 +21,27 @@ class Socket:
         self.ack_received = Queue()
         self.data_received = Queue()
 
-
     def send(self, message):
         if (self.address is None):
             raise Exception('Destination address not set')
         self.socket.sendto(message, self.address)
 
     def recv(self):
-        return  self.socket.recvfrom(DEFAULT_READABLE_SIZE)
+        return self.socket.recvfrom(DEFAULT_READABLE_SIZE)
 
     def _recv(self):
         packet, addr = self.socket.recvfrom(DEFAULT_READABLE_SIZE)
         message = Message.parse(packet)
-        if(message.is_ack()):
+        if (message.is_ack()):
             self.ack_received.put(message)
-        elif(message.is_data()):
+        elif (message.is_data()):
             self.data_received.put(message)
 
     def recv_ack(self):
         return self.ack_received.get()
-    
+
     def recv_data(self):
         return self.data_received.get()
-
 
     def change_destination(self, address):
         self.address = address
@@ -51,6 +49,7 @@ class Socket:
     def listen(self):
         self.listener = SocketListener(self)
         self.listener.start()
+
 
 class SocketListener(Thread):
     def __init__(self, socket):

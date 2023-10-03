@@ -29,11 +29,10 @@ class ConnectionThread(Thread):
             payload = Message.unwrap_payload_data(data)
             print('OPT: ', opt)
             if opt == 'METADATA':
-                if Message.unwrap_action_type(data) == 0: # 0 = download
+                if Message.unwrap_action_type(data) == 0:  # 0 = download
                     print('SERVER received download message')
                     ftp_server.handle_download(opt, payload, self.connection)
             if payload == b'exit':
                 print('SERVER received exit message')
             ftp_server.handle_new_message(opt, payload)
             print('SERVER received message: {0}\n - payload:{1},'.format(opt, payload))
-           

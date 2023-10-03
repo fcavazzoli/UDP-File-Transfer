@@ -25,21 +25,19 @@ class PacketHandler(Thread):
         self.next_seq_num = 0
 
     def recv(self):
-            while True: 
-                msg = self.socket.recv_data()
-                seq_num = msg.get_header().seq_num
-                payload = msg.get_payload()
+        while True:
+            msg = self.socket.recv_data()
+            seq_num = msg.get_header().seq_num
+            payload = msg.get_payload()
 
-                self.send_ack(seq_num)
+            self.send_ack(seq_num)
 
-                if(seq_num == self.next_seq_num):
-                    self.next_seq_num += 1
-                    break
+            if (seq_num == self.next_seq_num):
+                self.next_seq_num += 1
+                break
 
-            return payload
-
+        return payload
 
     def send_ack(self, ack_num):
         data = Message().set_header(0, ack_num, 'ACK').set_payload(b'').build()
         self.socket.send(data)
-
