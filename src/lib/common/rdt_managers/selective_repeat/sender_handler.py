@@ -28,7 +28,7 @@ class Packet:
         self.seq_num = seq_num
 
     def set_timer(self, resend):
-        self.timer = Timer(10, resend, [self])
+        self.timer = Timer(3, resend, [self])
         self.timer.start()
 
     def cancel_timer(self):

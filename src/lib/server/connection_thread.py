@@ -25,13 +25,12 @@ class ConnectionThread(Thread):
         ftp_server = FTPServer()
         data = self.connection.recv()
         opt = Message.unwrap_operation_type(data)
-        print('OPT: ', opt)
         if opt == 'METADATA':
             payload = Message.unwrap_payload_metadata(data)
             if Message.unwrap_action_type(data) == 0:  # 0 = download
-                print('SERVER received download message')
                 ftp_server.handle_download(opt, payload, self.connection)
             elif Message.unwrap_action_type(data) == 1:  # 1 = upload
-                print('SERVER received upload message')
                 ftp_server.handle_upload(opt, payload, self.connection)
-                print('SERVER received message: {0}\n - payload:{1},'.format(opt, payload))
+
+    # def close(self):
+    #     self.connection.close()

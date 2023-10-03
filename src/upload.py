@@ -7,6 +7,11 @@ from lib.helpers.network_builder import NetworkBuilder
 from lib.common.parser import parse_upload_args
 from lib.common.logger_setup import logger_setup
 
+def calculate_file_size_in_packets(file_size):
+    return (file_size / (DEFAULT_MESSAGE_SIZE)) + 1
+
+def calculate_percentage(packets_received, file_size):
+    return (packets_received / calculate_file_size_in_packets(file_size)) * 100
 
 def upload(parsed_args):
     logger = logger_setup(parsed_args)
@@ -29,8 +34,11 @@ def upload(parsed_args):
         logger.error("Missing arguments --name or --src are required")
         exit(1)
 
+    file_size = os.path.getsize(file_path)
+    packets_sended = 0
+
     # tenemos que restarle 1 porque el primer byte es el tipo de operacion
-    file_bytes = FileHandler(parsed_args.name, logger).read_bytes(DEFAULT_MESSAGE_SIZE-1)
+    file_bytes = FileHandler(parsed_args.name).read_bytes(DEFAULT_MESSAGE_SIZE-1)
     if file_bytes is None:
         exit(1)
 
@@ -38,12 +46,20 @@ def upload(parsed_args):
         logger.info("Client upload started")
         client.connect()
         client.send(Message.build_metadata_payload(name, 'upload'))
+        logger.info('Sent {0:.2f} % '.format(calculate_percentage(packets_sended, file_size)))
         for msg in file_bytes:
+            packets_sended += 1
             client.send(Message.build_data_payload(msg))
-        logger.info("Message sent")
+            if(packets_sended % min(100, calculate_file_size_in_packets(file_size) // 2) == 0):
+                logger.info('Sent {0:.2f} % '.format(calculate_percentage(packets_sended, file_size)))
         client.send(Message.build_data_payload(b'exit'))
+        #client.close()
+        logger.info("Client upload completed")
     except KeyboardInterrupt:
-        logger.info("Server stopped by user")
+        logger.info("Client upload stopped by user")
+        exit(0)
+    except Exception:
+        logger.error("Client upload stopped unexpectedly")
 
 
 

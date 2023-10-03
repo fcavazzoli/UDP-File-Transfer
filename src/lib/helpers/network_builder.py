@@ -17,6 +17,7 @@ class NetworkBuilder:
 
     def set_logger(self, logger):
         self.logger = logger
+        SingletonConfiguration().set('logger', logger)
         return self
 
     def set_port(self, port):
@@ -40,8 +41,8 @@ class NetworkBuilder:
 
     def _build_server(self):
         from lib.server import Server
-        return Server(self.host, self.port, self.logger)
+        return Server(self.host, self.port)
 
     def _build_client(self):
         from lib.client import Client
-        return Client(self.host, self.port, self.logger)
+        return Client(self.host, self.port)

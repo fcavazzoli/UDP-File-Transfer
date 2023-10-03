@@ -16,6 +16,7 @@ def run_server(parsed_args):
         logger.info("Server started")
         server.serve()
     except KeyboardInterrupt:
+        #server.close()
         logger.info("Server stopped by user")
         exit()
     except Exception as e:

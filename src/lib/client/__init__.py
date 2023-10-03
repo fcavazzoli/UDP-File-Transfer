@@ -1,11 +1,12 @@
 from lib.common.connection import Connection
+from lib.common.configs import SingletonConfiguration
 
 
 class Client:
-    def __init__(self, remote_ip, remote_port, logger):
+    def __init__(self, remote_ip, remote_port):
         self.connection = Connection()
         self.address = (remote_ip, remote_port)
-        self.logger = logger
+        self.logger = SingletonConfiguration().get('logger')
 
     def connect(self):
         self.connection.connect(self.address)

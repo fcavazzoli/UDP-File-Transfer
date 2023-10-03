@@ -2,3 +2,6 @@ __pycache__/
 *.log
 
 .env
+downloads/
+store/
+```
