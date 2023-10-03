@@ -24,7 +24,7 @@ class Project(Topo):
 
         # Add hosts
         for i in range(1, num_hosts + 1):
-            host = self.addHost("h{0}".format(i), ip="10.0.0.{0}".format)
+            host = self.addHost("h{0}".format(i), ip="10.0.0.{0}".format(i))
 
         # Add switch
         s1 = self.addSwitch('s1')
