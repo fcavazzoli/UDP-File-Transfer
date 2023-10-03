@@ -23,16 +23,15 @@ class ConnectionThread(Thread):
     def run(self):
         self.connection.accept(self.address)
         ftp_server = FTPServer()
-        while True:
-            data = self.connection.recv()
-            opt = Message.unwrap_operation_type(data)
-            payload = Message.unwrap_payload_data(data)
-            print('OPT: ', opt)
-            if opt == 'METADATA':
-                if Message.unwrap_action_type(data) == 0:  # 0 = download
-                    print('SERVER received download message')
-                    ftp_server.handle_download(opt, payload, self.connection)
-            if payload == b'exit':
-                print('SERVER received exit message')
-            ftp_server.handle_new_message(opt, payload)
-            print('SERVER received message: {0}\n - payload:{1},'.format(opt, payload))
+        data = self.connection.recv()
+        opt = Message.unwrap_operation_type(data)
+        print('OPT: ', opt)
+        if opt == 'METADATA':
+            payload = Message.unwrap_payload_metadata(data)
+            if Message.unwrap_action_type(data) == 0:  # 0 = download
+                print('SERVER received download message')
+                ftp_server.handle_download(opt, payload, self.connection)
+            elif Message.unwrap_action_type(data) == 1:  # 1 = upload
+                print('SERVER received upload message')
+                ftp_server.handle_upload(opt, payload, self.connection)
+                print('SERVER received message: {0}\n - payload:{1},'.format(opt, payload))

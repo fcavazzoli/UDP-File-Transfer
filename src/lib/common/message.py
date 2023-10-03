@@ -67,9 +67,12 @@ class Message:
 
     def unwrap_action_type(data):
         return int.from_bytes(data[1:2], byteorder='big')
+    
+    def unwrap_payload_metadata(payload):
+        return payload[2:]
 
     def unwrap_payload_data(payload):
-        return payload[2:]
+        return payload[1:]
 
     def is_ack(self):
         return self.type == HEADER_TYPE['ACK']

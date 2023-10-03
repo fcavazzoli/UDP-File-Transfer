@@ -9,22 +9,6 @@ class FTPServer():
     def __init__(self):
         self.file_name = None
 
-    def handle_new_message(self, opt, payload):
-        if opt == 'METADATA':
-            self.handle_metadata(payload)
-        elif opt == 'DATA':
-            self.handle_data(payload)
-        else:
-            print(f'Unknown operation type {opt}')
-
-    def handle_metadata(self, payload: bytes):
-        file_name = payload.decode('utf-8')
-        self.file_name = 'store/' + file_name
-
-    def handle_data(self, payload: bytes):
-        with open(self.file_name, 'ab') as f:
-            f.write(payload)
-
     def handle_download(self, opt, payload, connection):
         file_name = payload.decode('utf-8')
         print('el archivo existe', os.path.isfile('store/' + file_name))
@@ -36,3 +20,20 @@ class FTPServer():
         file_bytes = FileHandler('store/' + file_name, None).read_bytes(DEFAULT_MESSAGE_SIZE - 1)
         for msg in file_bytes:
             connection.send(Message.build_data_payload(msg))
+        connection.send(Message.build_data_payload(b'exit'))
+
+    def handle_upload(self, opt, payload, connection):
+        file_name = 'store/'+payload.decode('utf-8')
+        print('file_name:', file_name)
+        with open(file_name, 'ab') as f:
+            while True:
+                data = connection.recv()
+                opt = Message.unwrap_operation_type(data)
+                if opt == 'METADATA':
+                    payload = Message.unwrap_payload_metadata(data)
+                    if payload == b'ERROR_FILE_DOES_NOT_EXIST':
+                        break
+                payload = Message.unwrap_payload_data(data)
+                if payload == b'exit':
+                    break
+                f.write(payload)

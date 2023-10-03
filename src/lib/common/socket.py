@@ -50,6 +50,9 @@ class Socket:
         self.listener = SocketListener(self)
         self.listener.start()
 
+    def set_timeout(self, timeout):
+        self.socket.settimeout(timeout)
+
 
 class SocketListener(Thread):
     def __init__(self, socket):

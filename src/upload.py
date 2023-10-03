@@ -30,7 +30,7 @@ def upload(parsed_args):
         exit(1)
 
     # tenemos que restarle 1 porque el primer byte es el tipo de operacion
-    file_bytes = FileHandler(parsed_args.name, logger).read_bytes(DEFAULT_MESSAGE_SIZE - 1)
+    file_bytes = FileHandler(parsed_args.name, logger).read_bytes(DEFAULT_MESSAGE_SIZE-1)
     if file_bytes is None:
         exit(1)
 
@@ -44,8 +44,7 @@ def upload(parsed_args):
         client.send(Message.build_data_payload(b'exit'))
     except KeyboardInterrupt:
         logger.info("Server stopped by user")
-    except Exception as e:
-        logger.error(e)
+
 
 
 if __name__ == "__main__":

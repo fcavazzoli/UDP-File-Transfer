@@ -24,14 +24,14 @@ class Project(Topo):
 
         # Add hosts
         for i in range(1, num_hosts + 1):
-            host = self.addHost(F"h{i}", ip=F"10.0.0.{i}")
+            host = self.addHost("h{0}".format(i), ip="10.0.0.{0}".format)
 
         # Add switch
         s1 = self.addSwitch('s1')
 
         # Add links
         for i in range(1, num_hosts + 1):
-            self.addLink(F"h{i}", s1, cls=TCLink, loss=package_loss)
+            self.addLink("h{0}".format(i), s1, cls=TCLink, loss=package_loss)
 
 
 topos = {'project': (lambda: Project())}

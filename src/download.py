@@ -25,18 +25,19 @@ def download(parsed_args):
         while True:
             data = client.recv()
             opt = Message.unwrap_operation_type(data)
-            payload = Message.unwrap_payload_data(data)
             if opt == 'METADATA':
+                payload = Message.unwrap_payload_metadata(data)
                 if payload == b'ERROR_FILE_DOES_NOT_EXIST':
                     break
+            payload = Message.unwrap_payload_data(data)
             if payload == b'exit':
+                print('Download completed')
                 break
             file_handler.write_bytes(payload)
     except KeyboardInterrupt:
         logger.info("Client download stopped by user")
         exit(0)
-    except Exception as e:
-        logger.error(e)
+
 
 
 if __name__ == "__main__":
