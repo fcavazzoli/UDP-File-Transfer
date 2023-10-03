@@ -7,7 +7,7 @@ from lib.common.logger_setup import logger_setup
 from lib.constants import DEFAULT_MESSAGE_SIZE
 
 def calculate_file_size_in_packets(file_size):
-    return file_size / (DEFAULT_MESSAGE_SIZE)
+    return file_size / (DEFAULT_MESSAGE_SIZE) + 1
 
 def calculate_percentage(packets_received, file_size):
     return (packets_received / calculate_file_size_in_packets(file_size)) * 100
