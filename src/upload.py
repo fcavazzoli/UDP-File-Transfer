@@ -36,7 +36,7 @@ def upload(parsed_args):
     try:
         logger.info("Client upload started")
         client.connect()
-        client.send(Message.build_metadata_payload(name))
+        client.send(Message.build_metadata_payload(name, 'upload'))
         for msg in file_bytes:
             client.send(Message.build_data_payload(msg))
         logger.info("Message sent")
