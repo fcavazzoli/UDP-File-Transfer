@@ -11,7 +11,7 @@ class Client:
     def connect(self):
         self.connection.connect(self.address)
         self.logger.info('Connected to server')
-
+  
     def send(self, message):
         self.connection.send(message)
 

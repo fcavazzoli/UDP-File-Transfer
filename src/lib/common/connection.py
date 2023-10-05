@@ -3,7 +3,9 @@ from socket import timeout
 from .rdt_managers import RDTManagers
 from .socket import Socket
 from .configs import SingletonConfiguration
+from lib.ConnectionMaxRetriesException import ConnectionMaxRetriesException
 
+MAX_RETRIES = 5
 
 class Connection:
     socket = None
@@ -22,9 +24,10 @@ class Connection:
                 recv, addr = self.socket.recv()
                 break
             except timeout as e:
-                if self.connection_retry >= 5:
-                    raise 'Socket connection timeout'
+                if self.connection_retry >= MAX_RETRIES:
+                    raise ConnectionMaxRetriesException() from None 
                 self.connection_retry += 1
+                #'Socket connection timeout'
                 print ('Connection timeout, retrying...')
                 continue
         self.socket.set_timeout(None)
