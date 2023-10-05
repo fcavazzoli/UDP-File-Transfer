@@ -34,7 +34,7 @@ def logger_setup(parsed_args):
 
     # handler para el archivo
     formatter_archivo = logging.Formatter(
-        fmt='%(asctime)s:%(levelname)-8s [%(filename)s] --- %(message)s',
+        fmt='%(asctime)s %(levelname)-8s [%(filename)s] --- %(message)s',
         datefmt='%d-%m-%y %H:%M:%S')
     archivo_handler = logging.FileHandler(log_file_name)
     archivo_handler.setLevel(logging.DEBUG)
@@ -42,7 +42,7 @@ def logger_setup(parsed_args):
     logger.addHandler(archivo_handler)
 
     # handler por consola (personalizable por linea de comandos)
-    formatter_consola = logging.Formatter('%(levelname)-8s %(message)s')
+    formatter_consola = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s', datefmt='%H:%M:%S')
     consola_handler = logging.StreamHandler()
     consola_handler.setLevel(log_level)
     consola_handler.setFormatter(formatter_consola)

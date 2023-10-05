@@ -1,5 +1,7 @@
 from threading import Thread, Event
 from lib.common.message import Message
+from lib.common.configs import SingletonConfiguration
+from lib.constants import RECEIVER_WINDOW_SIZE
 
 # La clase receiver handler es la interfaz entre la capa de aplicacion y el protocolo de transporte
 
@@ -22,13 +24,17 @@ class PacketHandler(Thread):
     def __init__(self, socket):
         super(PacketHandler, self).__init__()
         self.socket = socket
-        self.window = Window(10)
+        self.window = Window(RECEIVER_WINDOW_SIZE)
         self.packet_to_read = Event()
+        self.logger = SingletonConfiguration().get('logger')
 
     def run(self):
         while (True):
             msg = self.socket.recv_data()
             seq_num = msg.get_header().seq_num
+
+            self.logger.debug('Received packet with seq_num: ' + str(seq_num))
+
             payload = msg.get_payload()
 
             if (self.window.packet_inside_window(seq_num)):
@@ -50,6 +56,7 @@ class PacketHandler(Thread):
 
     def send_ack(self, ack_num):
         data = Message().set_header(0, ack_num, 'ACK').set_payload(b'').build()
+        self.logger.debug('Sending ack: ' + str(ack_num))
         self.socket.send(data)
 
 
