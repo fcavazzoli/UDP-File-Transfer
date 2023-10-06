@@ -1,6 +1,8 @@
 from threading import Thread, Event, Timer
 
 from lib.common.message import Message
+from lib.common.configs import SingletonConfiguration
+from lib.constants import SENDER_WINDOW_SIZE, SENDER_TIMEOUT
 
 # La clase sender handler es la interfaz entre la capa de aplicacion y el protocolo de transporte
 
@@ -28,7 +30,7 @@ class Packet:
         self.seq_num = seq_num
 
     def set_timer(self, resend):
-        self.timer = Timer(3, resend, [self])
+        self.timer = Timer(SENDER_TIMEOUT, resend, [self])
         self.timer.start()
 
     def cancel_timer(self):
@@ -52,12 +54,14 @@ class PacketHandler(Thread):
     def __init__(self, socket):
         super(PacketHandler, self).__init__()
         self.socket = socket
-        self.window = Window(10)
+        self.window = Window(SENDER_WINDOW_SIZE)
+        self.logger = SingletonConfiguration().get('logger')
 
     def run(self):
         while (True):
             msg = self.socket.recv_ack()
             ack = msg.get_header().ack_num
+            self.logger.debug('Received ack: ' + str(ack))
 
             if (self.window.get_base() == ack):
                 self.window.clean_ack_packets()
@@ -69,6 +73,7 @@ class PacketHandler(Thread):
 
     def timeout(self, packet):
         packet.set_timer(self.timeout)
+        self.logger.debug('Timeout for packet: ' + str(packet.seq_num))
         self._send(packet.get_data())
 
     def _send(self, data):
@@ -78,6 +83,7 @@ class PacketHandler(Thread):
         while (self.window.is_message_to_send()):
             packet = self.window.next()
             packet.set_timer(self.timeout)
+            self.logger.debug('Sending packet: ' + str(packet.seq_num))
             self._send(packet.get_data())
 
     def send(self, data):

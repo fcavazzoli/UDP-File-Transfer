@@ -3,6 +3,7 @@ from socket import timeout
 from .rdt_managers import RDTManagers
 from .socket import Socket
 from .configs import SingletonConfiguration
+from lib.constants import CONNECTION_TIMEOUT
 from lib.ConnectionMaxRetriesException import ConnectionMaxRetriesException
 
 MAX_RETRIES = 5
@@ -19,7 +20,7 @@ class Connection:
         self.socket = Socket(address)
         while True: 
             try: 
-                self.socket.set_timeout(10)
+                self.socket.set_timeout(CONNECTION_TIMEOUT)
                 self.socket.send(b'handshake')
                 recv, addr = self.socket.recv()
                 break

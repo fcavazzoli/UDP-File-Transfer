@@ -1,6 +1,7 @@
 from threading import Thread, Event, Timer
 
 from lib.common.message import Message
+from lib.constants import SENDER_TIMEOUT
 
 # La clase sender handler es la interfaz entre la capa de aplicacion y el protocolo de transporte
 
@@ -27,7 +28,7 @@ class Packet:
         self.seq_num = seq_num
 
     def set_timer(self, resend):
-        self.timer = Timer(10, resend, [self])
+        self.timer = Timer(SENDER_TIMEOUT, resend, [self])
         self.timer.start()
 
     def cancel_timer(self):
