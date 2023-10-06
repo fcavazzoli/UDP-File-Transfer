@@ -6,6 +6,7 @@ from lib.constants import DEFAULT_MESSAGE_SIZE
 from lib.helpers.network_builder import NetworkBuilder
 from lib.common.parser import parse_upload_args
 from lib.common.logger_setup import logger_setup
+from lib.ConnectionMaxRetriesException import ConnectionMaxRetriesException
 
 def calculate_file_size_in_packets(file_size):
     return (file_size / (DEFAULT_MESSAGE_SIZE)) + 1
@@ -58,8 +59,11 @@ def upload(parsed_args):
     except KeyboardInterrupt:
         logger.info("Client upload stopped by user")
         exit(0)
+    except ConnectionMaxRetriesException as e: 
+        logger.error("Connection failed: {}".format(e))
     except Exception:
         logger.error("Client upload stopped unexpectedly")
+
 
 
 
