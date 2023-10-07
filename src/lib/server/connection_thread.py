@@ -32,5 +32,5 @@ class ConnectionThread(Thread):
             elif Message.unwrap_action_type(data) == 1:  # 1 = upload
                 ftp_server.handle_upload(opt, payload, self.connection)
 
-    # def close(self):
-    #     self.connection.close()
+    def close(self):
+        self.connection.close()

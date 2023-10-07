@@ -19,6 +19,5 @@ class Server:
                 raise Exception('Invalid handshake')
             self.threads_manager.new_connection(addr)
 
-    # def close(self):
-    #     self.threads_manager.close()
-    #     self.socket.close()
+    def close(self):
+        self.threads_manager.close()

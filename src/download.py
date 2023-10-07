@@ -47,14 +47,14 @@ def download(parsed_args):
                     logger.info('Received {0:.2f} % '.format(calculate_percentage(packets_received, file_size)))
                 if payload == b'exit':
                     logger.info('Download completed')
-                    #client.close()
+                    client.close()
                     break
                 file_handler.write_bytes(payload)
     except KeyboardInterrupt:
         logger.info("Client download stopped by user")
         exit(0)
-    except Exception:
-        logger.error("Client upload stopped unexpectedly")
+    except Exception as e:
+        logger.error("Client download stopped unexpectedly with error: " + str(e))
 
 
 

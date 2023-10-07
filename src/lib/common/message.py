@@ -8,6 +8,8 @@ OPT_TYPE = {
 HEADER_TYPE = {
     'DATA': 0,
     'ACK': 1,
+    'USER_CLOSE': 2,
+    'TIMEOUT': 3,
 }
 
 
@@ -78,3 +80,9 @@ class Message:
 
     def is_data(self):
         return self.type == HEADER_TYPE['DATA']
+    
+    def is_user_close(self):
+        return self.type == HEADER_TYPE['USER_CLOSE']
+    
+    def is_timeout(self):
+        return self.type == HEADER_TYPE['TIMEOUT']

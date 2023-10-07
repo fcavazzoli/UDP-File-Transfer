@@ -2,7 +2,8 @@ from threading import Thread, Event, Timer
 
 from lib.common.message import Message
 from lib.common.configs import SingletonConfiguration
-from lib.constants import SENDER_WINDOW_SIZE, SENDER_TIMEOUT
+from lib.common.errors import ReceivingTimeOut
+from lib.constants import SENDER_WINDOW_SIZE, SENDER_TIMEOUT, RECEIVER_TIMEOUT, MAX_RETRIES_WAITING
 
 # La clase sender handler es la interfaz entre la capa de aplicacion y el protocolo de transporte
 
@@ -17,6 +18,15 @@ class SenderHandler:
 
     def send(self, data):
         return self.packetHandler.send(data)
+    
+    def close(self):
+        self.packetHandler.close()
+
+    def join(self):
+        self.packetHandler.join()
+
+    def messages_on_window(self):
+        return self.packetHandler.window.messages_on_window()
 
 
 class Packet:
@@ -56,20 +66,31 @@ class PacketHandler(Thread):
         self.socket = socket
         self.window = Window(SENDER_WINDOW_SIZE)
         self.logger = SingletonConfiguration().get('logger')
+        self.is_closing = Event()
+        self.timeout_retries = 0
 
     def run(self):
         while (True):
-            msg = self.socket.recv_ack()
-            ack = msg.get_header().ack_num
-            self.logger.debug('Received ack: ' + str(ack))
+            try:
+                msg = self.socket.recv_ack(RECEIVER_TIMEOUT)
+                ack = msg.get_header().ack_num
+                self.logger.debug('Received ack: ' + str(ack))
 
-            if (self.window.get_base() == ack):
-                self.window.clean_ack_packets()
+                if (self.window.get_base() == ack):
+                    self.window.clean_ack_packets()
 
-            if (self.window.get_base() < ack):
-                self.window.mark_ack(ack)
+                if (self.window.get_base() < ack):
+                    self.window.mark_ack(ack)
 
-            self.send_available_packets()
+                self.send_available_packets()
+            except ReceivingTimeOut as e:
+                self.timeout_retries += 1
+                if (self.timeout_retries == MAX_RETRIES_WAITING):
+                    self.logger.debug('Max retries receiving packet')
+                    break
+                if (self.is_closing.is_set()):
+                    self.logger.debug('Sender Packet handler closed')
+                    break    
 
     def timeout(self, packet):
         packet.set_timer(self.timeout)
@@ -92,6 +113,10 @@ class PacketHandler(Thread):
 
         self.window.store(data)
         self.send_available_packets()
+
+    def close(self):
+        self.logger.debug('Closing sender handler')
+        self.is_closing.set()
 
 
 class Window:
@@ -139,3 +164,6 @@ class Window:
             return False
 
         return self.is_inside_window(self.last_consumed + 1) and self.last_consumed + 1 in self.packets
+    
+    def messages_on_window(self):
+        return len(self.packets)
