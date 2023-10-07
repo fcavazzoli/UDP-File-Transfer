@@ -17,3 +17,10 @@ class Client:
 
     def recv(self):
         return self.connection.recv()
+    
+    def messages_on_window(self):
+        return self.connection.messages_on_window()
+    
+    def close(self):
+        self.connection.close()
+        self.logger.info('Connection closed')

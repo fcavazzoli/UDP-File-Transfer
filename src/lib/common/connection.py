@@ -4,7 +4,7 @@ from .rdt_managers import RDTManagers
 from .socket import Socket
 from .configs import SingletonConfiguration
 from lib.constants import CONNECTION_TIMEOUT
-from lib.ConnectionMaxRetriesException import ConnectionMaxRetriesException
+from lib.common.errors import ConnectionMaxRetriesException
 
 MAX_RETRIES = 5
 
@@ -51,3 +51,16 @@ class Connection:
     def config_protocol(self):
         self.receiverHandler = RDTManagers.get_receiver_handler(self.rdt_type, self.socket)
         self.senderHandler = RDTManagers.get_sender_handler(self.rdt_type, self.socket)
+
+    def messages_on_window(self):
+        return self.senderHandler.messages_on_window()
+        
+
+    def close(self):
+        self.socket.close()
+        self.senderHandler.close()
+        self.receiverHandler.close()
+        self.receiverHandler.join()
+        self.socket.join()
+        self.senderHandler.join()
+

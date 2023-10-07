@@ -25,7 +25,14 @@ HEADER_TYPE_SIZE = 4
 # timeouts
 SENDER_TIMEOUT = 0.2
 CONNECTION_TIMEOUT = 3
+RECEIVER_TIMEOUT = 1 # Timeout encargado de chequear close connection y max retries en caso de que el sender se haya caido
 
 # window sizes
 SENDER_WINDOW_SIZE = 20
 RECEIVER_WINDOW_SIZE = 200
+
+MAX_RETRIES_WAITING = 30
+
+# messages
+USER_CLOSE = 'user_close'
+TIMEOUT = 'timeout'

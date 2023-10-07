@@ -1,7 +1,9 @@
 from threading import Thread, Event
+
 from lib.common.message import Message
 from lib.common.configs import SingletonConfiguration
-from lib.constants import RECEIVER_WINDOW_SIZE
+from lib.common.errors import ReceivingTimeOut
+from lib.constants import RECEIVER_WINDOW_SIZE, RECEIVER_TIMEOUT
 
 # La clase receiver handler es la interfaz entre la capa de aplicacion y el protocolo de transporte
 
@@ -16,6 +18,12 @@ class ReceiverHandler:
 
     def recv(self):
         return self.packetHandler.recv()
+    
+    def close(self):
+        self.packetHandler.close()
+    
+    def join(self):
+        self.packetHandler.join()
 
 
 # La clase packet handler es la que se encarga de recibir los mensajes y encolarlos en el orden correcto
@@ -27,25 +35,38 @@ class PacketHandler(Thread):
         self.window = Window(RECEIVER_WINDOW_SIZE)
         self.packet_to_read = Event()
         self.logger = SingletonConfiguration().get('logger')
+        self.timeout_retries = 0
+        self.is_closing = Event()
 
     def run(self):
         while (True):
-            msg = self.socket.recv_data()
-            seq_num = msg.get_header().seq_num
+            try:
+                msg = self.socket.recv_data(RECEIVER_TIMEOUT)
+                seq_num = msg.get_header().seq_num
 
-            self.logger.debug('Received packet with seq_num: ' + str(seq_num))
+                self.logger.debug('Received packet with seq_num: ' + str(seq_num))
 
-            payload = msg.get_payload()
+                payload = msg.get_payload()
 
-            if (self.window.packet_inside_window(seq_num)):
-                self.window.store(seq_num, payload)
-                self.send_ack(seq_num)
+                if (self.window.packet_inside_window(seq_num)):
+                    self.window.store(seq_num, payload)
+                    self.send_ack(seq_num)
 
-            elif (self.window.packet_was_received(seq_num)):
-                self.send_ack(seq_num)
+                elif (self.window.packet_was_received(seq_num)):
+                    self.send_ack(seq_num)
 
-            if (self.window.packets_to_read()):
-                self.packet_to_read.set()
+                if (self.window.packets_to_read()):
+                    self.packet_to_read.set()
+            except ReceivingTimeOut as e:
+                self.timeout_retries += 1
+                if (self.timeout_retries == 5):
+                    self.logger.debug('Max retries receiving packet')
+                    break
+                if (self.is_closing.is_set()):
+                    self.logger.debug('Receiver Packet handler closed')
+                    break
+                
+
 
     def recv(self):
         if (not self.window.packets_to_read()):
@@ -58,6 +79,10 @@ class PacketHandler(Thread):
         data = Message().set_header(0, ack_num, 'ACK').set_payload(b'').build()
         self.logger.debug('Sending ack: ' + str(ack_num))
         self.socket.send(data)
+
+    def close(self):
+        self.logger.debug('Closing receiver handler')
+        self.is_closing.set()
 
 
 # La clase window es la representacion de la ventana de recepcion

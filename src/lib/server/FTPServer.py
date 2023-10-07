@@ -22,7 +22,7 @@ class FTPServer():
         for msg in file_bytes:
             connection.send(Message.build_data_payload(msg))
         connection.send(Message.build_data_payload(b'exit'))
-        # connection.close()
+        connection.close()
 
     def handle_upload(self, opt, payload, connection):
         file_name = 'store/'+payload.decode('utf-8')
@@ -38,4 +38,4 @@ class FTPServer():
                 if payload == b'exit':
                     break
                 f.write(payload)
-        # connection.close()
+        connection.close()
