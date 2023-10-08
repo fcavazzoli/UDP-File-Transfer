@@ -32,7 +32,6 @@ class FTPServer():
             try:
                 os.remove(file_name)
                 self.logger.debug("The file '{0}' already exists. It has been deleted and started being replaced with the new one.".format(file_name))
-                print()
             except OSError as e:
                 self.logger.debug("Error deleting file '{0}': {1}".format(file_name, e))
 
