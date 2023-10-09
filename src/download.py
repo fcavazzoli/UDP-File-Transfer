@@ -52,9 +52,11 @@ def download(parsed_args):
                 file_handler.write_bytes(payload)
     except KeyboardInterrupt:
         logger.info("Client download stopped by user")
+        client.close()
         exit(0)
     except Exception as e:
         logger.error("Client download stopped unexpectedly with error: " + str(e))
+        client.close()
 
 
 

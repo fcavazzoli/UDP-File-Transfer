@@ -71,6 +71,7 @@ def upload(parsed_args):
         client.close()
         exit(0)
     except ConnectionMaxRetriesException as e: 
+        client.close()
         logger.error("Connection failed: {}".format(e))
     except Exception as e:
         logger.error("Client upload stopped unexpectedly with error " + str(e))
