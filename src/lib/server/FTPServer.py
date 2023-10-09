@@ -1,4 +1,5 @@
 import os
+from lib.common.configs import SingletonConfiguration
 from lib.common.file_handler import FileHandler
 
 from lib.common.message import Message
@@ -8,6 +9,7 @@ from lib.constants import DEFAULT_MESSAGE_SIZE
 class FTPServer():
     def __init__(self):
         self.file_name = None
+        self.logger = SingletonConfiguration().get('logger')
 
     def handle_download(self, opt, payload, connection):
         file_name = payload.decode('utf-8')
@@ -26,6 +28,13 @@ class FTPServer():
 
     def handle_upload(self, opt, payload, connection):
         file_name = 'store/'+payload.decode('utf-8')
+        if os.path.isfile(file_name):
+            try:
+                os.remove(file_name)
+                self.logger.debug("The file '{0}' already exists. It has been deleted and started being replaced with the new one.".format(file_name))
+            except OSError as e:
+                self.logger.debug("Error deleting file '{0}': {1}".format(file_name, e))
+
         with open(file_name, 'ab') as f:
             while True:
                 data = connection.recv()
