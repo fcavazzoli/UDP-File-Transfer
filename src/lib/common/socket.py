@@ -35,6 +35,7 @@ class Socket:
 
     def _recv(self):
         packet, addr = self.socket.recvfrom(DEFAULT_READABLE_SIZE)
+        self.logger.debug('Sokcet receive')
         message = Message.parse(packet)
         if (message.is_ack()):
             self.ack_received.put(message)
@@ -64,7 +65,6 @@ class Socket:
         self.socket.settimeout(timeout)
 
     def close(self):
-        self.logger.debug('Closing socket')
         self.listener.close()
 
     def join(self):
@@ -84,21 +84,23 @@ class SocketListener(Thread):
     def run(self):
         while (True):
             try:
-                self.closing = Event()
                 self.socket._recv()
                 self.timeout_retries = 0
             except socket.timeout:
+                self.timeout_retries += 1
+                self.logger.debug('Socket recv timeout #{0} is closing {1}'.format(self.timeout_retries, self.closing.is_set()))
                 if (self.closing.is_set()):
                     self.logger.debug('Socket listener closed')
                     break
                 if (self.timeout_retries == MAX_RETRIES_WAITING):
-                    self.logger.debug('Socket listener timed out')
+                    self.logger.error('Socket listener timed out')
                     break
                 
                 continue
 
 
     def close(self):
+        self.logger.debug('Closing listener socket')
         self.closing.set()
 
     

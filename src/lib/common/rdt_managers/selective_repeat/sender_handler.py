@@ -73,6 +73,7 @@ class PacketHandler(Thread):
         while (True):
             try:
                 msg = self.socket.recv_ack(RECEIVER_TIMEOUT)
+                self.timeout_retries = 0
                 ack = msg.get_header().ack_num
                 self.logger.debug('Received ack: ' + str(ack))
 
@@ -84,9 +85,10 @@ class PacketHandler(Thread):
 
                 self.send_available_packets()
             except ReceivingTimeOut as e:
-                self.timeout_retries += 1
+                if (self.window.waiting_ack()): self.timeout_retries += 1
+                self.logger.debug('Sending time out #{0}'.format(self.timeout_retries))
                 if (self.timeout_retries == MAX_RETRIES_WAITING):
-                    self.logger.debug('Max retries receiving packet')
+                    self.logger.error('Max retries receiving packet')
                     break
                 if (self.is_closing.is_set()):
                     self.logger.debug('Sender Packet handler closed')
@@ -167,3 +169,6 @@ class Window:
     
     def messages_on_window(self):
         return len(self.packets)
+    
+    def waiting_ack(self):
+        return len(self.packets) != 0

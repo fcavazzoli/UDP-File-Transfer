@@ -3,7 +3,7 @@ from threading import Thread, Event
 from lib.common.message import Message
 from lib.common.configs import SingletonConfiguration
 from lib.common.errors import ReceivingTimeOut
-from lib.constants import RECEIVER_WINDOW_SIZE, RECEIVER_TIMEOUT
+from lib.constants import RECEIVER_WINDOW_SIZE, RECEIVER_TIMEOUT, MAX_RETRIES_WAITING
 
 # La clase receiver handler es la interfaz entre la capa de aplicacion y el protocolo de transporte
 
@@ -33,6 +33,7 @@ class PacketHandler(Thread):
         super(PacketHandler, self).__init__()
         self.socket = socket
         self.window = Window(RECEIVER_WINDOW_SIZE)
+        self.waiting_to_read = Event()
         self.packet_to_read = Event()
         self.logger = SingletonConfiguration().get('logger')
         self.timeout_retries = 0
@@ -42,6 +43,7 @@ class PacketHandler(Thread):
         while (True):
             try:
                 msg = self.socket.recv_data(RECEIVER_TIMEOUT)
+                self.timeout_retries = 0
                 seq_num = msg.get_header().seq_num
 
                 self.logger.debug('Received packet with seq_num: ' + str(seq_num))
@@ -58,9 +60,10 @@ class PacketHandler(Thread):
                 if (self.window.packets_to_read()):
                     self.packet_to_read.set()
             except ReceivingTimeOut as e:
-                self.timeout_retries += 1
-                if (self.timeout_retries == 5):
-                    self.logger.debug('Max retries receiving packet')
+                if(self.waiting_to_read.is_set()): self.timeout_retries += 1
+                self.logger.debug('Reciving time out #{0}'.format(self.timeout_retries))
+                if (self.timeout_retries == MAX_RETRIES_WAITING):
+                    self.logger.error('Max retries receiving packet')
                     break
                 if (self.is_closing.is_set()):
                     self.logger.debug('Receiver Packet handler closed')
@@ -70,7 +73,9 @@ class PacketHandler(Thread):
 
     def recv(self):
         if (not self.window.packets_to_read()):
+            self.waiting_to_read.set()
             self.packet_to_read.wait()
+            self.waiting_to_read.clear()
         self.packet_to_read.clear()
 
         return self.window.next()
