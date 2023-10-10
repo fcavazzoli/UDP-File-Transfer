@@ -38,7 +38,7 @@ def upload(parsed_args, first_upload):
         .set_protocol(protocol)\
         .build()
 
-    file_path = parsed_args.src if parsed_args.src is not None else parsed_args.name
+    file_path = parsed_args.src if parsed_args.src is not None else name
     if file_path is None:
         logger.error("Missing arguments --name or --src are required")
         exit(1)
