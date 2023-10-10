@@ -43,7 +43,6 @@ def download(parsed_args, first_download):
                 payload = Message.unwrap_payload_metadata(data)
                 if payload == b'ERROR_FILE_DOES_NOT_EXIST':
                     logger.error("File does not exist")
-                    first_download = True
                     break
                 else :
                     file_size = int(payload)
